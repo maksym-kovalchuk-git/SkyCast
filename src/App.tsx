@@ -4,7 +4,7 @@ function App() {
 
   return (
     <>
-      <h1>SkyCast</h1>
+      <h1 className='text-slate-800'>SkyCast</h1>
     </>
   )
 }
