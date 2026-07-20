@@ -14,6 +14,7 @@ export interface CurrentWeather {
     temp_min: number
     temp_max: number
     humidity: number
+    pressure: number
   }
   wind: {
     speed: number
