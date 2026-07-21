@@ -64,9 +64,9 @@ function App() {
       />
       {suggestions.length > 0 && (
         <ul>
-          {suggestions.map((s, i) => (
+          {suggestions.map((s) => (
             <li
-              key={i}
+              key={`${s.lat}-${s.lon}`}
               onClick={() => handleSelect(s)}
             >
               {s.local_names?.en ?? s.name}{s.state ? `, ${s.state}` : ''}, {s.country}
