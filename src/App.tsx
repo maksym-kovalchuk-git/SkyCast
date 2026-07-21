@@ -1,20 +1,22 @@
 import { useEffect, useState } from 'react'
 import './App.css'
-import { getCurrentWeather } from './api/weather';
-import type { CurrentWeather } from './types/weather'
+import { getCurrentWeather, getCitySuggestions } from './api/weather';
+import type { CurrentWeather, GeoLocation } from './types/weather'
 
 
 function App() {
   const [city, setCity] = useState('Kyiv')
+  const [inputSearch, setInputSearch] = useState('')
+  const [suggestions, setSuggestions] = useState<GeoLocation[]>([])
   const [weather, setWeather] = useState<CurrentWeather | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
-  async function handleGetWeather() {
+  async function handleGetWeather(cityName: string = city) {
     setLoading(true)
     setError(null)
     try {
-      const data = await getCurrentWeather(city)
+      const data = await getCurrentWeather(cityName)
       setWeather(data)
     } catch (e) {
       setError( e instanceof Error ? e.message : 'Something went wrong')
@@ -23,14 +25,52 @@ function App() {
     }
   }
 
+  function handleSelect(loc: GeoLocation) {
+    setCity(loc.name)
+    setSuggestions([])
+    handleGetWeather(loc.name)
+    setInputSearch('')
+  }
+
+  useEffect(() => {
+    if (!inputSearch) {
+      setSuggestions([])
+      return
+    }
+
+    const timeoutId = setTimeout(() => {
+      getCitySuggestions(inputSearch).then(setSuggestions)
+    }, 250)
+
+    return () => clearTimeout(timeoutId)
+  }, [inputSearch])
+
   useEffect(() => {
     handleGetWeather()
   }, [])
   return (
     <>
       <h1 className='text-slate-700'>SkyCast</h1>
-      <button onClick={() => {setCity('Rivne')}}>Set Rivne</button>
-      <button onClick={() => {handleGetWeather()}}>Get weather</button>
+      <input 
+        type='text'
+        value={inputSearch}
+        placeholder="Enter city"
+        onChange={(e) => {setInputSearch(e.target.value)}}
+        className='border rounded px-3 py-2 w-full'
+      />
+      {suggestions.length > 0 && (
+        <ul>
+          {suggestions.map((s, i) => (
+            <li
+              key={i}
+              onClick={() => handleSelect(s)}
+
+            >
+              {s.local_names?.en ?? s.name}{s.state ? `, ${s.state}` : ''}, {s.country}
+            </li>
+          ))}
+        </ul>
+      )}
       
       {loading && <p>Loading...</p>}
       {error && <p>{error}</p>}

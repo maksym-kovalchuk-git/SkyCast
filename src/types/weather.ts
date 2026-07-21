@@ -27,3 +27,12 @@ export interface CurrentWeather {
 export interface WeatherApiError {
   error: string
 }
+
+export interface GeoLocation {
+  name: string
+  local_names?: Record<string, string>
+  lat: number
+  lon: number
+  country: string
+  state?: string
+}
