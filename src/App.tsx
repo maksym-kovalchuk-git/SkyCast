@@ -7,6 +7,7 @@ import type { CurrentWeather, GeoLocation } from './types/weather'
 function App() {
   const [inputSearch, setInputSearch] = useState('')
   const [suggestions, setSuggestions] = useState<GeoLocation[]>([])
+  const [suggestionsError, setSuggestionsError] = useState('')
   const [weather, setWeather] = useState<CurrentWeather | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -37,7 +38,12 @@ function App() {
     }
 
     const timeoutId = setTimeout(() => {
-      getCitySuggestions(inputSearch).then(setSuggestions)
+      getCitySuggestions(inputSearch)
+      .then(setSuggestions)
+      .catch((e) => {
+        setSuggestionsError(e instanceof Error ? e.message : 'Something went wrong')
+        setSuggestions([])
+      })
     }, 250)
 
     return () => clearTimeout(timeoutId)
@@ -68,6 +74,8 @@ function App() {
           ))}
         </ul>
       )}
+
+      {suggestionsError && <p>{suggestionsError}</p>}
       
       {loading && <p>Loading...</p>}
       {error && <p>{error}</p>}
