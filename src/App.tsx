@@ -5,14 +5,13 @@ import type { CurrentWeather, GeoLocation } from './types/weather'
 
 
 function App() {
-  const [city, setCity] = useState('Kyiv')
   const [inputSearch, setInputSearch] = useState('')
   const [suggestions, setSuggestions] = useState<GeoLocation[]>([])
   const [weather, setWeather] = useState<CurrentWeather | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
-  async function handleGetWeather(cityName: string = city) {
+  async function handleGetWeather(cityName: string) {
     setLoading(true)
     setError(null)
     try {
@@ -26,7 +25,6 @@ function App() {
   }
 
   function handleSelect(loc: GeoLocation) {
-    setCity(loc.name)
     setSuggestions([])
     handleGetWeather(loc.name)
     setInputSearch('')
@@ -46,7 +44,7 @@ function App() {
   }, [inputSearch])
 
   useEffect(() => {
-    handleGetWeather()
+    handleGetWeather('Kyiv')
   }, [])
   return (
     <>
@@ -64,7 +62,6 @@ function App() {
             <li
               key={i}
               onClick={() => handleSelect(s)}
-
             >
               {s.local_names?.en ?? s.name}{s.state ? `, ${s.state}` : ''}, {s.country}
             </li>
