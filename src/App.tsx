@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import { getCurrentWeather } from './api/weather';
 import type { CurrentWeather, GeoLocation } from './types/weather'
-import { CitySearch } from './components';
+import { CitySearch, WeatherCard } from './components';
 
 
 function App() {
@@ -39,16 +39,8 @@ function App() {
       
       {loading && <p>Loading...</p>}
       {error && <p>{error}</p>}
-      {weather && 
-        <div>
-          <h1>{weather.name} temperature: {Math.round(weather.main.temp)}°C</h1> 
-          <p>Feels like: {Math.round(weather.main.feels_like)}°C</p>
-          <p >{weather.weather[0].main}</p>
-          <p>Humidity: {weather.main.humidity}%</p>
-          <p>Pressure: {weather.main.pressure} hPa</p>
-          <p>Wind speed: {Math.round(weather.wind.speed)} m/s</p>
-        </div>
-      }
+      <WeatherCard weather={weather} />
+      
     </>
   )
 }
