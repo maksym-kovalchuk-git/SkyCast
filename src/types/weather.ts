@@ -36,3 +36,26 @@ export interface GeoLocation {
   country: string
   state?: string
 }
+
+export interface ForecastItem {
+  dt: number
+  dt_txt: string
+  weather: WeatherCondition[]
+  main: {
+    temp: number
+    feels_like: number
+    humidity: number
+    pressure: number
+  }
+  wind: {
+    speed: number
+  }
+}
+
+export interface ForecastResponse {
+  city: {
+    name: string
+    country: string
+  }
+  list: ForecastItem[]
+}
