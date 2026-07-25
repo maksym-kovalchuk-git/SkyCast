@@ -11,7 +11,11 @@ type DailyMinMax = {
 }
 
 export default function Forecast({ forecast }: ForecastProps) {
-    const dailyForecast = forecast?.list.filter(item => item.dt_txt.includes('12:00:00'))
+    const todayDate = forecast?.list[0]?.dt_txt.split(' ')[0]
+
+    const dailyForecast = forecast?.list.filter(item =>
+        item.dt_txt.includes('12:00:00') && item.dt_txt.split(' ')[0] !== todayDate
+    )
 
     const dailyMinMax: Record<string, DailyMinMax> = forecast?.list.reduce<Record<string, DailyMinMax>>((acc, item) => {
         const date = item.dt_txt.split(' ')[0];
