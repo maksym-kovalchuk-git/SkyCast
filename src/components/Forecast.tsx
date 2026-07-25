@@ -5,24 +5,25 @@ interface ForecastProps {
     forecast: ForecastResponse | null
 }
 
-type DailyMinTemps = Record<string, number>;
+type DailyMinMax = {
+    min: number;
+    max: number
+}
 
 export default function Forecast({ forecast }: ForecastProps) {
     const dailyForecast = forecast?.list.filter(item => item.dt_txt.includes('12:00:00'))
 
-    function getDailyMinTemp(): DailyMinTemps {
-        if (!forecast) return {}
+    const dailyMinMax: Record<string, DailyMinMax> = forecast?.list.reduce<Record<string, DailyMinMax>>((acc, item) => {
+        const date = item.dt_txt.split(' ')[0];
+        const temp = item.main.temp;
+        const existing = acc[date]
 
-        return forecast.list.reduce<DailyMinTemps>((acc, item) => {
-            const date = item.dt_txt.split(' ')[0];
-            const min = item.main.temp;
+        acc[date] = existing
+            ? {min: Math.min(existing.min, temp), max: Math.max(existing.max, temp) }
+            : {min: temp, max: temp}
 
-            acc[date] = date in acc ? Math.min(acc[date], min) : min;
-            return acc;
-        }, {});
-    }
-
-    const dailyMinTemps = getDailyMinTemp()
+        return acc;
+    }, {}) ?? {}
 
     return (
         <>
@@ -30,11 +31,18 @@ export default function Forecast({ forecast }: ForecastProps) {
             <h1>5-day weather forecast</h1>
             {dailyForecast && (
                 <ul>
-                {dailyForecast.map((item) => (
-                    <li key={item.dt}>
-                        {item.dt_txt.slice(0, 10)}: min {formatTemp(dailyMinTemps[item.dt_txt.split(' ')[0]])}, {item.weather[0].main}
-                    </li>
-                ))}
+                {dailyForecast.map((item) => {
+                    const date = item.dt_txt.split(' ')[0]
+                    const { min, max } = dailyMinMax[date]
+                    const minTemp = formatTemp(min)
+                    const maxTemp = formatTemp(max)
+
+                    return (
+                        <li key={item.dt}>
+                            {date}: min: {minTemp}, max: {maxTemp}, {item.weather[0].main}
+                        </li>
+                    )
+                })}
                 </ul>
             )}
         </>
