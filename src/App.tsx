@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import { getCurrentWeather, getForecast } from './api/weather';
 import { type ForecastResponse, type CurrentWeather, type GeoLocation } from './types/weather'
-import { CitySearch, WeatherCard } from './components';
+import { CitySearch, WeatherCard, Forecast } from './components';
 
 
 function App() {
@@ -30,7 +30,6 @@ function App() {
     handleGetWeather(loc.name)
   }
 
-  const dailyForecast = forecast?.list.filter(item => item.dt_txt.includes('12:00:00'))
 
   useEffect(() => {
     handleGetWeather('Kyiv')
@@ -44,17 +43,7 @@ function App() {
       {error && <p>{error}</p>}
       <WeatherCard weather={weather} />
 
-      <br></br>
-      <h1>5-day weather forecast</h1>
-      {dailyForecast && (
-        <ul>
-          {dailyForecast.map((item) => (
-            <li key={item.dt}>
-              {item.dt_txt.slice(0, 10)}: {Math.round(item.main.temp)}°C, {item.weather[0].main}
-            </li>
-          ))}
-        </ul>
-      )}
+      <Forecast forecast={forecast} />
       
     </>
   )
