@@ -34,7 +34,7 @@ export default function Forecast({ forecast }: ForecastProps) {
             <br></br>
             <h1>5-day weather forecast</h1>
             {dailyForecast && (
-                <ul>
+                <ul className="flex">
                 {dailyForecast.map((item) => {
                     const date = item.dt_txt.split(' ')[0]
                     const { min, max } = dailyMinMax[date]
@@ -43,7 +43,11 @@ export default function Forecast({ forecast }: ForecastProps) {
 
                     return (
                         <li key={item.dt}>
-                            {date}: min: {minTemp}, max: {maxTemp}, {item.weather[0].main}
+                            {date}: min: {minTemp}, max: {maxTemp}, 
+                            <p>{item.weather[0].main}</p>
+                            <p>Humidity: {item.main.humidity}%</p>
+                            <p>Pressure: {item.main.pressure} hPa</p>
+                            <p>Wind speed: {Math.round(item.wind.speed)} m/s</p>
                         </li>
                     )
                 })}
