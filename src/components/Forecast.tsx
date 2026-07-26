@@ -30,11 +30,10 @@ export default function Forecast({ forecast }: ForecastProps) {
     }, {}) ?? {}
 
     return (
-        <>
-            <br></br>
-            <h1>5-day weather forecast</h1>
+        <div>
+            <h2 className="text-2xl text-slate-800 mb-3">5-day forecast</h2>
             {dailyForecast && (
-                <ul className="flex">
+                <div className="flex justify-between gap-3 overflow-x-auto pb-2">
                 {dailyForecast.map((item) => {
                     const date = item.dt_txt.split(' ')[0]
                     const { min, max } = dailyMinMax[date]
@@ -42,17 +41,22 @@ export default function Forecast({ forecast }: ForecastProps) {
                     const maxTemp = formatTemp(max)
 
                     return (
-                        <li key={item.dt}>
-                            {date}: min: {minTemp}, max: {maxTemp}, 
-                            <p>{item.weather[0].main}</p>
-                            <p>Humidity: {item.main.humidity}%</p>
-                            <p>Pressure: {item.main.pressure} hPa</p>
-                            <p>Wind speed: {Math.round(item.wind.speed)} m/s</p>
-                        </li>
+                        <div
+                            key={item.dt}
+                            className="shrink-0 w-38 bg-white rounded-xl border border-slate-200 p-4 text-center"
+                        >
+                            <p className="text-sm text-slate-500">{date.slice(5)}</p>
+                            <p className="text-sm text-slate-700 my-1">{item.weather[0].main}</p>
+                            <p className="text-slate-800">
+                                {maxTemp} <span className="text-slate-400">/ {minTemp}</span>
+                            </p>
+                            <p className="text-xs text-slate-400 mt-2">Humidity {item.main.humidity}%</p>
+                            <p className="text-xs text-slate-400">Wind {Math.round(item.wind.speed)} m/s</p>
+                        </div>
                     )
                 })}
-                </ul>
+                </div>
             )}
-        </>
+        </div>
     )
 }

@@ -35,17 +35,19 @@ function App() {
     handleGetWeather('Kyiv')
   }, [])
   return (
-    <>
-      <h1 className='text-slate-700'>SkyCast</h1>
-      <CitySearch onSelect={handleSelect} />
-      
-      {loading && <p>Loading...</p>}
-      {error && <p>{error}</p>}
-      <WeatherCard weather={weather} />
+    <div className="min-h-screen">
+      <header className="flex bg-gradient-to-r from-sky-500/75 to-blue-600/75 flex-wrap items-center justify-between gap-4 px-8 py-6">
+        <h1 className="text-3xl text-white">SkyCast</h1>
+        <CitySearch onSelect={handleSelect} />
+      </header>
 
-      <Forecast forecast={forecast} />
-      
-    </>
+      <main className="max-w-4xl mt-15 px-8 pb-12 flex flex-col gap-6">
+        {loading && <p className="text-slate-500">Loading...</p>}
+        {error && <p className="text-red-600">{error}</p>}
+        <WeatherCard weather={weather} />
+        <Forecast forecast={forecast} />
+      </main>
+    </div>
   )
 }
 
