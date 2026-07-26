@@ -39,13 +39,17 @@ export default function Forecast({ forecast }: ForecastProps) {
                     const { min, max } = dailyMinMax[date]
                     const minTemp = formatTemp(min)
                     const maxTemp = formatTemp(max)
+                    const formattedDate = new Date(date).toLocaleDateString('en-GB', {
+                        day: 'numeric',
+                        month: 'long',
+                    })
 
                     return (
                         <div
                             key={item.dt}
                             className="shrink-0 w-38 bg-white rounded-xl border border-slate-200 p-4 text-center"
                         >
-                            <p className="text-sm text-slate-500">{date.slice(5)}</p>
+                            <p className="text-sm text-slate-500">{formattedDate}</p>
                             <p className="text-sm text-slate-700 my-1">{item.weather[0].main}</p>
                             <p className="text-slate-800">
                                 {maxTemp} <span className="text-slate-400">/ {minTemp}</span>
