@@ -11,11 +11,11 @@ export default function WeatherCard({ weather }: WeatherCardProps ) {
             {weather &&
                 <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
                     <div className="flex items-baseline justify-between">
-                        <h2 className="text-2xl text-slate-800">{weather.name}</h2>
                         <span className="text-4xl text-slate-800">{formatTemp(weather.main.temp)}</span>
+                        <p>{weather.weather[0].main}</p>
                     </div>
                     <p className="text-slate-500 mb-4 pb-4">
-                        {weather.weather[0].main} · Feels like {formatTemp(weather.main.feels_like)}
+                        Feels like {formatTemp(weather.main.feels_like)}
                     </p>
                     <div className="grid grid-cols-3 gap-4 text-sm text-slate-600 border-t border-slate-100 pt-4">
                         <div>

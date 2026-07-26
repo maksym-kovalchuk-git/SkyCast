@@ -44,7 +44,10 @@ function App() {
       <main className="max-w-4xl mt-15 px-8 pb-12 flex flex-col gap-6">
         {loading && <p className="text-slate-500">Loading...</p>}
         {error && <p className="text-red-600">{error}</p>}
-        <WeatherCard weather={weather} />
+        <div>
+          {weather && <p className='text-xl text-slate-800 pb-2 mr-5'>Weather in city: {weather.name}</p>}
+          <WeatherCard weather={weather} />
+        </div>
         <Forecast forecast={forecast} />
       </main>
     </div>
