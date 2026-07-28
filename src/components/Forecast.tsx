@@ -10,6 +10,25 @@ type DailyMinMax = {
     max: number
 }
 
+function getDailyCondition(list: ForecastResponse['list']): Record<string, string> {
+    const counts: Record<string, Record<string, number>> = {}
+
+    for (const item of list) {
+        const date = item.dt_txt.split(' ')[0]
+        const condition = item.weather[0].main
+
+        counts[date] = counts[date] ?? {}
+        counts[date][condition] = (counts[date][condition] ?? 0) + 1
+    }
+
+    const dominant: Record<string, string> = {}
+    for (const date in counts) {
+        dominant[date] = Object.entries(counts[date]).sort((a, b) => b[1] - a[1])[0][0]
+    }
+
+    return dominant
+}
+
 export default function Forecast({ forecast }: ForecastProps) {
     const todayDate = forecast?.list[0]?.dt_txt.split(' ')[0]
 
@@ -29,9 +48,11 @@ export default function Forecast({ forecast }: ForecastProps) {
         return acc;
     }, {}) ?? {}
 
+    const dailyCondition = getDailyCondition(forecast?.list ?? [])
+
     return (
         <div>
-            <h2 className="text-2xl text-slate-800 mb-3">5-day forecast</h2>
+            {dailyForecast && (<h2 className="text-2xl text-slate-800 mb-3">5-day forecast</h2>)}
             {dailyForecast && (
                 <div className="flex justify-between gap-3 overflow-x-auto pb-2">
                 {dailyForecast.map((item) => {
@@ -50,7 +71,7 @@ export default function Forecast({ forecast }: ForecastProps) {
                             className="shrink-0 w-38 bg-white rounded-xl border border-slate-200 p-4 text-center"
                         >
                             <p className="text-sm text-slate-500">{formattedDate}</p>
-                            <p className="text-sm text-slate-700 my-1">{item.weather[0].main}</p>
+                            <p className="text-sm text-slate-700 my-1">{dailyCondition[date]}</p>
                             <p className="text-slate-800">
                                 {maxTemp} <span className="text-slate-400">/ {minTemp}</span>
                             </p>
