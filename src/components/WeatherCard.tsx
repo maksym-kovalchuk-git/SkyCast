@@ -12,7 +12,14 @@ export default function WeatherCard({ weather }: WeatherCardProps ) {
                 <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
                     <div className="flex items-baseline justify-between">
                         <span className="text-4xl text-slate-800">{formatTemp(weather.main.temp)}</span>
-                        <p>{weather.weather[0].main}</p>
+                        <div className="flex items-center gap-1">
+                            <img
+                                src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+                                alt={weather.weather[0].main}
+                                className="w-10 h-10"
+                            />
+                            <p>{weather.weather[0].main}</p>
+                        </div>
                     </div>
                     <p className="text-slate-500 mb-4 pb-4">
                         Feels like {formatTemp(weather.main.feels_like)}

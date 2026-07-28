@@ -10,20 +10,27 @@ type DailyMinMax = {
     max: number
 }
 
-function getDailyCondition(list: ForecastResponse['list']): Record<string, string> {
-    const counts: Record<string, Record<string, number>> = {}
+type ConditionInfo = {
+    main: string;
+    icon: string;
+}
+
+function getDailyCondition(list: ForecastResponse['list']): Record<string, ConditionInfo> {
+    const counts: Record<string, Record<string, { count: number; icon: string }>> = {}
 
     for (const item of list) {
         const date = item.dt_txt.split(' ')[0]
-        const condition = item.weather[0].main
+        const { main, icon } = item.weather[0]
 
         counts[date] = counts[date] ?? {}
-        counts[date][condition] = (counts[date][condition] ?? 0) + 1
+        counts[date][main] = counts[date][main] ?? { count: 0, icon }
+        counts[date][main].count += 1
     }
 
-    const dominant: Record<string, string> = {}
+    const dominant: Record<string, ConditionInfo> = {}
     for (const date in counts) {
-        dominant[date] = Object.entries(counts[date]).sort((a, b) => b[1] - a[1])[0][0]
+        const [main, info] = Object.entries(counts[date]).sort((a, b) => b[1].count - a[1].count)[0]
+        dominant[date] = { main, icon: info.icon }
     }
 
     return dominant
@@ -71,7 +78,12 @@ export default function Forecast({ forecast }: ForecastProps) {
                             className="shrink-0 w-38 bg-white rounded-xl border border-slate-200 p-4 text-center"
                         >
                             <p className="text-sm text-slate-500">{formattedDate}</p>
-                            <p className="text-sm text-slate-700 my-1">{dailyCondition[date]}</p>
+                            <img
+                                src={`https://openweathermap.org/img/wn/${dailyCondition[date].icon}@2x.png`}
+                                alt={dailyCondition[date].main}
+                                className="w-10 h-10 mx-auto"
+                            />
+                            <p className="text-sm text-slate-700 my-1">{dailyCondition[date].main}</p>
                             <p className="text-slate-800">
                                 {maxTemp} <span className="text-slate-400">/ {minTemp}</span>
                             </p>
