@@ -23,8 +23,16 @@ function getDailyCondition(list: ForecastResponse['list']): Record<string, Condi
         const { main, icon } = item.weather[0]
 
         counts[date] = counts[date] ?? {}
-        counts[date][main] = counts[date][main] ?? { count: 0, icon }
-        counts[date][main].count += 1
+        const existing = counts[date][main]
+
+        if (!existing) {
+            counts[date][main] = { count: 1, icon }
+        } else {
+            existing.count += 1
+            if (existing.icon.endsWith('n') && icon.endsWith('d')) {
+                existing.icon = icon
+            }
+        }
     }
 
     const dominant: Record<string, ConditionInfo> = {}
