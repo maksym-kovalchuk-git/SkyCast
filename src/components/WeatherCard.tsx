@@ -10,9 +10,14 @@ export default function WeatherCard({ weather }: WeatherCardProps ) {
         <>
             {weather &&
                 <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-                    <div className="flex items-baseline justify-between">
-                        <span className="text-4xl text-slate-800">{formatTemp(weather.main.temp)}</span>
-                        <div className="flex items-center gap-1">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <span className="text-4xl text-slate-800">{formatTemp(weather.main.temp)}</span>
+                            <p className="text-slate-500">
+                                Feels like {formatTemp(weather.main.feels_like)}
+                            </p>
+                        </div>
+                        <div className="flex flex-col items-center gap-1">
                             <img
                                 src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
                                 alt={weather.weather[0].main}
@@ -20,11 +25,8 @@ export default function WeatherCard({ weather }: WeatherCardProps ) {
                             />
                             <p>{weather.weather[0].main}</p>
                         </div>
-                    </div>
-                    <p className="text-slate-500 mb-4 pb-4">
-                        Feels like {formatTemp(weather.main.feels_like)}
-                    </p>
-                    <div className="grid grid-cols-3 gap-4 text-sm text-slate-600 border-t border-slate-100 pt-4">
+                    </div>                    
+                    <div className="grid grid-cols-3 gap-4 text-sm text-slate-600 border-t border-slate-100 pt-4 mt-4">
                         <div>
                             <span className="block text-slate-400">Humidity</span>
                             {weather.main.humidity}%
