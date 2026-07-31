@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import { getCurrentWeather, getForecast } from './api/weather';
 import { type ForecastResponse, type CurrentWeather, type GeoLocation } from './types/weather'
-import { CitySearch, WeatherCard, Forecast } from './components';
+import { CitySearch, WeatherCard, Forecast, HourlyForecast } from './components';
 
 
 function App() {
@@ -47,27 +47,7 @@ function App() {
           {weather && <p className='text-xl text-slate-800 pb-2 mr-5'>Weather in city: {weather.name}</p>}
           <WeatherCard weather={weather} />
         </div>
-        <div>
-          {forecast && (
-            <div className='flex gap-6'>
-              {forecast.list.slice(0, 8).map((item) => (
-                <div key={item.dt} className='flex flex-col items-center'>
-                  <p>{item.dt_txt.split(' ')[1].slice(0, 5)}</p>
-                  <img
-                      src={`https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`}
-                      alt={item.weather[0].main}
-                      className="w-10 h-10"
-                  />
-                  <p>{Math.round(item.main.temp)}°C</p>
-                  <p>{Math.round(item.main.feels_like)}°C</p>
-                  <p>{item.main.humidity}%</p>
-                  <p>{item.main.pressure} hPa</p>
-                  <p>{Math.round(item.wind.speed)} m/s</p>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        <HourlyForecast forecast={forecast} />
         <Forecast forecast={forecast} />
       </main>
     </div>
