@@ -30,7 +30,6 @@ function App() {
     handleGetWeather(loc.name)
   }
 
-
   useEffect(() => {
     handleGetWeather('Kyiv')
   }, [])
@@ -47,6 +46,17 @@ function App() {
         <div>
           {weather && <p className='text-xl text-slate-800 pb-2 mr-5'>Weather in city: {weather.name}</p>}
           <WeatherCard weather={weather} />
+        </div>
+        <div>
+          {forecast && (
+            <div>
+              {forecast.list.slice(0, 8).map((item) => (
+                <div key={item.dt}>
+                  <p>{item.dt_txt.split(' ')[1].slice(0, 5)}</p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         <Forecast forecast={forecast} />
       </main>
