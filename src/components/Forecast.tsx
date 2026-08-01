@@ -67,38 +67,38 @@ export default function Forecast({ forecast }: ForecastProps) {
 
   return (
     <div>
-      {dailyForecast && (<h2 className="text-2xl text-slate-800 mb-3">5-day forecast</h2>)}
+      {dailyForecast && (<h2 className="text-2xl text-slate-800 mb-3">Weather forecast</h2>)}
       {dailyForecast && (
-        <div className="flex justify-between gap-3 overflow-x-auto pb-2">
-        {dailyForecast.map((item) => {
-          const date = item.dt_txt.split(' ')[0]
-          const { min, max } = dailyMinMax[date]
-          const minTemp = formatTemp(min)
-          const maxTemp = formatTemp(max)
-          const formattedDate = new Date(date).toLocaleDateString('en-GB', {
-            day: 'numeric',
-            month: 'long',
-          })
+        <div className="flex gap-3 overflow-x-auto pb-2">
+          {dailyForecast.map((item) => {
+            const date = item.dt_txt.split(' ')[0]
+            const { min, max } = dailyMinMax[date]
+            const minTemp = formatTemp(min)
+            const maxTemp = formatTemp(max)
+            const formattedDate = new Date(date).toLocaleDateString('en-GB', {
+              day: 'numeric',
+              month: 'long',
+            })
 
-          return (
-            <div
-              key={item.dt}
-              className="shrink-0 w-38 bg-white rounded-xl border border-slate-200 p-4 text-center"
-            >
-              <p className="text-sm text-slate-500">{formattedDate}</p>
-              <img
-                src={`https://openweathermap.org/img/wn/${dailyCondition[date].icon}@2x.png`}
-                alt={dailyCondition[date].main}
-                className="w-10 h-10 mx-auto"
-              />
-              <p className="text-sm text-slate-700 my-1">{dailyCondition[date].main}</p>
-              <p className="text-slate-800">
-                {maxTemp} <span className="text-slate-400">/ {minTemp}</span>
-              </p>
-              <p className="text-xs text-slate-400 mt-2">Humidity {item.main.humidity}%</p>
-              <p className="text-xs text-slate-400">Wind {Math.round(item.wind.speed)} m/s</p>
-            </div>
-          )
+            return (
+              <div
+                key={item.dt}
+                className="shrink-0 w-38 bg-white rounded-xl border border-slate-200 p-4 text-center"
+              >
+                <p className="text-sm text-slate-500">{formattedDate}</p>
+                <img
+                  src={`https://openweathermap.org/img/wn/${dailyCondition[date].icon}@2x.png`}
+                  alt={dailyCondition[date].main}
+                  className="w-10 h-10 mx-auto"
+                />
+                <p className="text-sm text-slate-700 my-1">{dailyCondition[date].main}</p>
+                <p className="text-slate-800">
+                  {maxTemp} <span className="text-slate-400">/ {minTemp}</span>
+                </p>
+                <p className="text-xs text-slate-400 mt-2">Humidity {item.main.humidity}%</p>
+                <p className="text-xs text-slate-400">Wind {Math.round(item.wind.speed)} m/s</p>
+              </div>
+            )
         })}
         </div>
       )}

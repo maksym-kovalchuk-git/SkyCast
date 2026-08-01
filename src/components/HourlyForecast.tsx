@@ -15,7 +15,7 @@ export default function HourlyForecast({ forecast }: ForecastProps) {
             {forecast.list.slice(0, 8).map((item) => (
               <li
                 key={item.dt}
-                className="shrink-0 w-32 p-4 text-center"
+                className="shrink-0 w-32 p-4 text-center pb-4"
               >
                 <time dateTime={item.dt_txt} className="block text-sm text-slate-900 pb-2">
                   {item.dt_txt.split(' ')[1].slice(0, 5)}
