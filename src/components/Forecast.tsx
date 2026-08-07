@@ -17,6 +17,36 @@ type ConditionInfo = {
   icon: string;
 }
 
+type DailyAverages = {
+  humidity: number;
+  windSpeed: number;
+}
+
+function getDailyAverages(list: ForecastResponse['list']): Record<string, DailyAverages> {
+  const sums: Record<string, { humidity: number; windSpeed: number; count: number }> = {}
+
+  for (const item of list) {
+    const date = item.dt_txt.split(' ')[0]
+    const existing = sums[date] ?? { humidity: 0, windSpeed: 0, count: 0 }
+
+    sums[date] = {
+      humidity: existing.humidity + item.main.humidity,
+      windSpeed: existing.windSpeed + item.wind.speed,
+      count: existing.count + 1,
+    }
+  }
+
+  const averages: Record<string, DailyAverages> = {}
+  for (const date in sums) {
+    averages[date] = {
+      humidity: sums[date].humidity / sums[date].count,
+      windSpeed: sums[date].windSpeed / sums[date].count,
+    }
+  }
+
+  return averages
+}
+
 const conditionPriority: Record<string, number> = {
   Thunderstorm: 7,
   Snow: 6,
@@ -85,6 +115,7 @@ export default function Forecast({ forecast }: ForecastProps) {
   }, {}) ?? {}
 
   const dailyCondition = getDailyCondition(forecast?.list ?? [])
+  const dailyAverages = getDailyAverages(forecast?.list ?? [])
 
   return (
     <div>
@@ -101,6 +132,7 @@ export default function Forecast({ forecast }: ForecastProps) {
             })
             const condition = dailyCondition[date]
             const Icon = getWeatherIcon(condition.main, condition.icon)
+            const { humidity, windSpeed } = dailyAverages[date]
 
             return (
               <div
@@ -118,8 +150,8 @@ export default function Forecast({ forecast }: ForecastProps) {
                   <p className="text-white font-semibold text-sm">
                     {maxTemp} <span className="text-white/40">/ {minTemp}</span>
                   </p>
-                  <p className="text-xs text-white/40 font-semibold">Hum {item.main.humidity}%</p>
-                  <p className="text-xs text-white/40 font-semibold">{Math.round(item.wind.speed)} m/s</p>
+                  <p className="text-xs text-white/40 font-semibold">Hum {Math.round(humidity)}%</p>
+                  <p className="text-xs text-white/40 font-semibold">{Math.round(windSpeed)} m/s</p>
                 </div>
               </div>
             )
