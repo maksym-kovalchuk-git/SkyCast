@@ -57,12 +57,12 @@ export default function CitySearch({ onSelect }: CitySearchProps) {
         />
       </div>
       {suggestions.length > 0 && (
-        <ul className="absolute top-full left-0 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg overflow-hidden z-10">
+        <ul className="absolute top-full left-0 w-full mt-2 bg-white/8 backdrop-blur-md border border-white/12 rounded-2xl shadow-lg overflow-hidden z-10">
         {suggestions.map((s) => (
           <li
           key={`${s.lat}-${s.lon}`}
           onClick={() => handleSelect(s)}
-          className="px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 cursor-pointer"
+          className="px-4 py-2.5 text-sm text-white/80 hover:bg-white/10 cursor-pointer transition-colors"
           >
           {s.local_names?.en ?? s.name}{s.state ? `, ${s.state}` : ''}, {s.country}
           </li>
@@ -70,7 +70,7 @@ export default function CitySearch({ onSelect }: CitySearchProps) {
         </ul>
       )}
 
-      {suggestionsError && <p className="text-sm text-red-600 mt-1">{suggestionsError}</p>}
+      {suggestionsError && <p className="text-sm text-red-400 mt-1">{suggestionsError}</p>}
     </div>
   )
 }
