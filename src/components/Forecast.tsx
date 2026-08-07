@@ -1,5 +1,6 @@
 import type { ForecastResponse } from "../types/weather"
 import { formatTemp } from "../utils/formatTemp"
+import { getWeatherIcon } from "../icons";
 
 interface ForecastProps {
   forecast: ForecastResponse | null
@@ -12,33 +13,53 @@ type DailyMinMax = {
 
 type ConditionInfo = {
   main: string;
+  description: string;
   icon: string;
 }
 
+const conditionPriority: Record<string, number> = {
+  Thunderstorm: 7,
+  Snow: 6,
+  Rain: 5,
+  Drizzle: 4,
+  Mist: 3,
+  Smoke: 3,
+  Haze: 3,
+  Dust: 3,
+  Fog: 3,
+  Clouds: 2,
+  Clear: 1,
+}
+
 function getDailyCondition(list: ForecastResponse['list']): Record<string, ConditionInfo> {
-  const counts: Record<string, Record<string, { count: number; icon: string }>> = {}
+  const counts: Record<string, Record<string, { count: number; icon: string; description: string }>> = {}
 
   for (const item of list) {
     const date = item.dt_txt.split(' ')[0]
-    const { main, icon } = item.weather[0]
+    const { main, icon, description } = item.weather[0]
 
     counts[date] = counts[date] ?? {}
     const existing = counts[date][main]
 
     if (!existing) {
-      counts[date][main] = { count: 1, icon }
+      counts[date][main] = { count: 1, icon, description }
     } else {
       existing.count += 1
       if (existing.icon.endsWith('n') && icon.endsWith('d')) {
         existing.icon = icon
+        existing.description = description
       }
     }
   }
 
   const dominant: Record<string, ConditionInfo> = {}
   for (const date in counts) {
-    const [main, info] = Object.entries(counts[date]).sort((a, b) => b[1].count - a[1].count)[0]
-    dominant[date] = { main, icon: info.icon }
+    const [main, info] = Object.entries(counts[date]).sort((a, b) => {
+      const countDiff = b[1].count - a[1].count
+      if (countDiff !== 0) return countDiff
+      return (conditionPriority[b[0]] ?? 0) - (conditionPriority[a[0]] ?? 0)
+    })[0]
+    dominant[date] = { main, description: info.description, icon: info.icon }
   }
 
   return dominant
@@ -67,36 +88,39 @@ export default function Forecast({ forecast }: ForecastProps) {
 
   return (
     <div>
-      {dailyForecast && (<h2 className="text-2xl text-slate-800 mb-3">Weather forecast</h2>)}
+      {dailyForecast && (<h2 className="text-xl text-white font-bold my-4 ">Daily forecast</h2>)}
       {dailyForecast && (
-        <div className="flex gap-3 overflow-x-auto pb-2">
+        <div className="flex flex-col divide-y divide-white/12 bg-white/6 rounded-3xl border border-white/12">
           {dailyForecast.map((item) => {
             const date = item.dt_txt.split(' ')[0]
             const { min, max } = dailyMinMax[date]
             const minTemp = formatTemp(min)
             const maxTemp = formatTemp(max)
-            const formattedDate = new Date(date).toLocaleDateString('en-GB', {
-              day: 'numeric',
-              month: 'long',
+            const formattedDate = new Date(date).toLocaleDateString('en-US', {
+              weekday: 'short',
             })
+            const condition = dailyCondition[date]
+            const Icon = getWeatherIcon(condition.main, condition.icon)
 
             return (
               <div
                 key={item.dt}
-                className="shrink-0 w-38 bg-white rounded-xl border border-slate-200 p-4 text-center"
+                className="flex gap-4 items-center pl-6 pr-18 justify-between"
               >
-                <p className="text-sm text-slate-500">{formattedDate}</p>
-                <img
-                  src={`https://openweathermap.org/img/wn/${dailyCondition[date].icon}@2x.png`}
-                  alt={dailyCondition[date].main}
-                  className="w-10 h-10 mx-auto"
-                />
-                <p className="text-sm text-slate-700 my-1">{dailyCondition[date].main}</p>
-                <p className="text-slate-800">
-                  {maxTemp} <span className="text-slate-400">/ {minTemp}</span>
-                </p>
-                <p className="text-xs text-slate-400 mt-2">Humidity {item.main.humidity}%</p>
-                <p className="text-xs text-slate-400">Wind {Math.round(item.wind.speed)} m/s</p>
+                <div className="flex items-center py-4 gap-24">
+                  <p className="text-sm font-bold text-white">{formattedDate}</p>
+                  <span className="flex">
+                    <Icon size={24} />
+                    <p className="text-sm text-white/60 font-semibold pl-3">{condition.description}</p>
+                  </span>
+                </div>
+                <div className="flex items-center py-4 gap-18">
+                  <p className="text-white font-semibold text-sm">
+                    {maxTemp} <span className="text-white/40">/ {minTemp}</span>
+                  </p>
+                  <p className="text-xs text-white/40 font-semibold">Hum {item.main.humidity}%</p>
+                  <p className="text-xs text-white/40 font-semibold">{Math.round(item.wind.speed)} m/s</p>
+                </div>
               </div>
             )
         })}

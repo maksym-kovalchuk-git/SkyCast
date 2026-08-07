@@ -38,22 +38,22 @@ export default function CitySearch({ onSelect }: CitySearchProps) {
   return (
     <div className="relative w-full sm:w-72">
       <div className="relative">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="20px"
-          viewBox="0 -960 960 960"
-          width="20px"
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          height="12px" 
+          viewBox="0 -960 960 960" 
+          width="12px" 
           fill="currentColor"
-          className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-white"
+          className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none text-white/60"
         >
-          <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/>
+          <path d="M783.52-110.91 529.85-364.59q-29.76 23.05-68.64 36.57-38.88 13.52-83.12 13.52-111.16 0-188.33-77.17-77.17-77.18-77.17-188.33t77.17-188.33q77.17-77.17 188.33-77.17 111.15 0 188.32 77.17 77.18 77.18 77.18 188.33 0 44.48-13.52 83.12-13.53 38.64-36.57 68.16l253.91 254.15-63.89 63.66ZM378.09-405.5q72.84 0 123.67-50.83 50.83-50.82 50.83-123.67t-50.83-123.67q-50.83-50.83-123.67-50.83-72.85 0-123.68 50.83-50.82 50.82-50.82 123.67t50.82 123.67q50.83 50.83 123.68 50.83Z"/>
         </svg>
         <input
           type='text'
           value={inputSearch}
-          placeholder="Enter city"
+          placeholder="Search city..."
           onChange={(e) => {setInputSearch(e.target.value)}}
-          className='border border-slate-300 rounded-lg pl-9 pr-3 py-2 w-full text-white placeholder:text-white/70 focus:outline-none focus:ring-2 focus:ring-white'
+          className='h-11 bg-white/6 border border-white/12 rounded-3xl pl-9 pr-3 py-2 w-full text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20'
         />
       </div>
       {suggestions.length > 0 && (
