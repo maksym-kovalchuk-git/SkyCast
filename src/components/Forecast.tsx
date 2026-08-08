@@ -149,7 +149,7 @@ export default function Forecast({ forecast, onSelectDetails }: ForecastProps) {
                   className="w-full flex gap-4 items-center pl-6 pr-18 justify-between text-left outline-none hover:bg-white/6 transition-colors"
                 >
                   <div className="flex items-center py-4 gap-24">
-                    <time dateTime={date} className="text-sm font-bold text-white">{formattedDate}</time>
+                    <time dateTime={date} className="w-10 shrink-0 text-sm font-bold text-white">{formattedDate}</time>
                     <span className="flex items-center">
                       <WeatherIcon main={condition.main} icon={condition.icon} size={24} />
                       <p className="text-sm text-white/60 font-semibold pl-3">{condition.description}</p>
