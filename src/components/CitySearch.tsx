@@ -22,16 +22,25 @@ export default function CitySearch({ onSelect }: CitySearchProps) {
       return
     }
 
+    let ignore = false
+
     const timeoutId = setTimeout(() => {
       getCitySuggestions(inputSearch)
-      .then(setSuggestions)
+      .then((data) => {
+        if (!ignore) setSuggestions(data)
+      })
       .catch((e) => {
-        setSuggestionsError(e instanceof Error ? e.message : 'Something went wrong')
-        setSuggestions([])
+        if (!ignore) {
+          setSuggestionsError(e instanceof Error ? e.message : 'Something went wrong')
+          setSuggestions([])
+        }
       })
     }, 250)
 
-    return () => clearTimeout(timeoutId)
+    return () => {
+      ignore = true
+      clearTimeout(timeoutId)
+    }
   }, [inputSearch])
 
   function handleSelect(loc: GeoLocation) {
