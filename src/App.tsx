@@ -3,6 +3,7 @@ import './App.css'
 import { getCurrentWeather, getForecast } from './api/weather';
 import { type ForecastResponse, type CurrentWeather, type GeoLocation, type WeatherDetails } from './types/weather'
 import { CitySearch, WeatherCard, Forecast, HourlyForecast, WeatherMap, WeatherDetailsModal } from './components';
+import { getSavedCity, saveCity } from './utils';
 
 
 function App() {
@@ -28,12 +29,13 @@ function App() {
   }
 
   function handleSelect(loc: GeoLocation) {
+    saveCity(loc.name)
     handleGetWeather(loc.name)
   }
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- standard fetch-on-mount pattern, loading/error state must update synchronously with the request lifecycle
-    handleGetWeather('Kyiv')
+    handleGetWeather(getSavedCity() ?? 'Kyiv')
   }, [])
   return (
     <div className="min-h-screen">
