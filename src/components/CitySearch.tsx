@@ -10,10 +10,12 @@ export default function CitySearch({ onSelect }: CitySearchProps) {
   const [inputSearch, setInputSearch] = useState('')
   const [suggestions, setSuggestions] = useState<GeoLocation[]>([])
   const [suggestionsError, setSuggestionsError] = useState('')
+  const [activeIndex, setActiveIndex] = useState(-1)
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- clearing stale results/errors from the previous query before debouncing the next fetch
     setSuggestionsError('')
+    setActiveIndex(-1)
 
     if (!inputSearch) {
       setSuggestions([])
@@ -34,8 +36,29 @@ export default function CitySearch({ onSelect }: CitySearchProps) {
 
   function handleSelect(loc: GeoLocation) {
     setSuggestions([])
+    setActiveIndex(-1)
     setInputSearch('')
     onSelect(loc)
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (suggestions.length === 0) return
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      setActiveIndex((i) => (i + 1) % suggestions.length)
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      setActiveIndex((i) => (i - 1 + suggestions.length) % suggestions.length)
+    } else if (e.key === 'Enter') {
+      if (activeIndex >= 0) {
+        e.preventDefault()
+        handleSelect(suggestions[activeIndex])
+      }
+    } else if (e.key === 'Escape') {
+      setSuggestions([])
+      setActiveIndex(-1)
+    }
   }
 
   return (
@@ -57,17 +80,28 @@ export default function CitySearch({ onSelect }: CitySearchProps) {
           value={inputSearch}
           placeholder="Search city..."
           onChange={(e) => {setInputSearch(e.target.value)}}
+          onKeyDown={handleKeyDown}
+          role="combobox"
+          aria-expanded={suggestions.length > 0}
+          aria-controls="city-suggestions"
+          aria-activedescendant={activeIndex >= 0 ? `city-suggestion-${activeIndex}` : undefined}
           className='h-11 bg-white/6 border border-white/12 rounded-3xl pl-9 pr-3 py-2 w-full text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20'
         />
       </div>
       {suggestions.length > 0 && (
-        <ul className="absolute top-full left-0 w-full mt-2 bg-white/8 backdrop-blur-md border border-white/12 rounded-2xl shadow-lg overflow-hidden z-10">
-        {suggestions.map((s) => (
-          <li key={`${s.lat}-${s.lon}`}>
+        <ul id="city-suggestions" role="listbox" className="absolute top-full left-0 w-full mt-2 bg-white/8 backdrop-blur-md border border-white/12 rounded-2xl shadow-lg overflow-hidden z-10">
+        {suggestions.map((s, i) => (
+          <li key={`${s.lat}-${s.lon}`} role="presentation">
             <button
+              id={`city-suggestion-${i}`}
+              role="option"
+              aria-selected={i === activeIndex}
               type="button"
               onClick={() => handleSelect(s)}
-              className="w-full text-left px-4 py-2.5 text-sm text-white/80 hover:bg-white/10 cursor-pointer transition-colors"
+              onMouseEnter={() => setActiveIndex(i)}
+              className={`w-full text-left px-4 py-2.5 text-sm outline-none cursor-pointer transition-colors ${
+                i === activeIndex ? 'bg-white/20 text-white' : 'text-white/80 hover:bg-white/10'
+              }`}
             >
               {s.local_names?.en ?? s.name}{s.state ? `, ${s.state}` : ''}, {s.country}
             </button>
