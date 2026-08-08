@@ -7,6 +7,10 @@ export interface WeatherCondition {
 
 export interface CurrentWeather {
   name: string
+  coord: {
+    lat: number
+    lon: number
+  }
   weather: WeatherCondition[]
   main: {
     temp: number
