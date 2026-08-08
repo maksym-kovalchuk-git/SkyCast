@@ -7,6 +7,9 @@ export interface WeatherCondition {
 
 export interface CurrentWeather {
   name: string
+  dt: number
+  timezone: number
+  visibility: number
   coord: {
     lat: number
     lon: number
@@ -22,9 +25,16 @@ export interface CurrentWeather {
   }
   wind: {
     speed: number
+    deg: number
+    gust?: number
+  }
+  clouds: {
+    all: number
   }
   sys: {
     country: string
+    sunrise: number
+    sunset: number
   }
 }
 
@@ -48,12 +58,22 @@ export interface ForecastItem {
   main: {
     temp: number
     feels_like: number
+    temp_min: number
+    temp_max: number
     humidity: number
     pressure: number
+    dew_point: number
   }
   wind: {
     speed: number
+    deg: number
+    gust?: number
   }
+  clouds: {
+    all: number
+  }
+  visibility: number
+  pop: number
 }
 
 export interface ForecastResponse {
@@ -66,4 +86,30 @@ export interface ForecastResponse {
 
 export interface ForecastSectionProps {
   forecast: ForecastResponse | null
+}
+
+export type WeatherDetailsSource = 'current' | 'hourly' | 'daily'
+
+export interface WeatherDetails {
+  source: WeatherDetailsSource
+  cityName: string
+  date: string
+  weekday: string
+  hour?: string
+  temp: number
+  feelsLike: number
+  conditionMain: string
+  conditionDescription: string
+  conditionIcon: string
+  pressure: number
+  humidity: number
+  dewPoint: number
+  windSpeed: number
+  windDeg: number
+  windGust?: number
+  pop?: number
+  cloudsPercent: number
+  visibility: number
+  sunrise?: string
+  sunset?: string
 }

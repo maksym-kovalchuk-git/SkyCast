@@ -1,6 +1,10 @@
-import type { ForecastResponse, ForecastSectionProps } from "../types/weather"
-import { formatTemp, formatWind, getDateKey } from "../utils"
+import type { ForecastResponse, ForecastSectionProps, WeatherDetails } from "../types/weather"
+import { formatTemp, formatWind, getDateKey, buildDailyForecastDetails } from "../utils"
 import { WeatherIcon } from "../icons";
+
+interface ForecastProps extends ForecastSectionProps {
+  onSelectDetails: (details: WeatherDetails) => void
+}
 
 type DailyMinMax = {
   min: number;
@@ -91,7 +95,7 @@ function getDailyCondition(list: ForecastResponse['list']): Record<string, Condi
   return dominant
 }
 
-export default function Forecast({ forecast }: ForecastSectionProps) {
+export default function Forecast({ forecast, onSelectDetails }: ForecastProps) {
   const todayDate = forecast?.list[0] && getDateKey(forecast.list[0].dt_txt)
 
   const dailyForecast = forecast?.list.filter(item =>
@@ -130,24 +134,35 @@ export default function Forecast({ forecast }: ForecastSectionProps) {
             const { humidity, windSpeed } = dailyAverages[date]
 
             return (
-              <li
-                key={item.dt}
-                className="flex gap-4 items-center pl-6 pr-18 justify-between"
-              >
-                <div className="flex items-center py-4 gap-24">
-                  <time dateTime={date} className="text-sm font-bold text-white">{formattedDate}</time>
-                  <span className="flex items-center">
-                    <WeatherIcon main={condition.main} icon={condition.icon} size={24} />
-                    <p className="text-sm text-white/60 font-semibold pl-3">{condition.description}</p>
-                  </span>
-                </div>
-                <div className="flex items-center py-4 gap-18">
-                  <p className="text-white font-semibold text-sm">
-                    {maxTemp} <span className="text-white/40">/ {minTemp}</span>
-                  </p>
-                  <p className="text-xs text-white/40 font-semibold">Hum {Math.round(humidity)}%</p>
-                  <p className="text-xs text-white/40 font-semibold">{formatWind(windSpeed)}</p>
-                </div>
+              <li key={item.dt}>
+                <button
+                  type="button"
+                  onClick={() => onSelectDetails(buildDailyForecastDetails(item, {
+                    cityName: forecast?.city.name ?? '',
+                    maxTemp: max,
+                    humidity,
+                    windSpeed,
+                    conditionMain: condition.main,
+                    conditionDescription: condition.description,
+                    conditionIcon: condition.icon,
+                  }))}
+                  className="w-full flex gap-4 items-center pl-6 pr-18 justify-between text-left outline-none hover:bg-white/6 transition-colors"
+                >
+                  <div className="flex items-center py-4 gap-24">
+                    <time dateTime={date} className="text-sm font-bold text-white">{formattedDate}</time>
+                    <span className="flex items-center">
+                      <WeatherIcon main={condition.main} icon={condition.icon} size={24} />
+                      <p className="text-sm text-white/60 font-semibold pl-3">{condition.description}</p>
+                    </span>
+                  </div>
+                  <div className="flex items-center py-4 gap-18">
+                    <p className="text-white font-semibold text-sm">
+                      {maxTemp} <span className="text-white/40">/ {minTemp}</span>
+                    </p>
+                    <p className="text-xs text-white/40 font-semibold">Hum {Math.round(humidity)}%</p>
+                    <p className="text-xs text-white/40 font-semibold">{formatWind(windSpeed)}</p>
+                  </div>
+                </button>
               </li>
             )
         })}

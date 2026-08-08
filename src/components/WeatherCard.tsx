@@ -1,12 +1,13 @@
-import type { CurrentWeather } from "../types/weather";
-import { formatTemp, formatWind } from "../utils";
+import type { CurrentWeather, WeatherDetails } from "../types/weather";
+import { formatTemp, formatWind, buildCurrentWeatherDetails } from "../utils";
 import { WeatherIcon } from "../icons";
 
 interface WeatherCardProps {
   weather: CurrentWeather | null;
+  onSelectDetails: (details: WeatherDetails) => void;
 }
 
-export default function WeatherCard({ weather }: WeatherCardProps ) {
+export default function WeatherCard({ weather, onSelectDetails }: WeatherCardProps ) {
   return (
     <>
       {weather &&
@@ -24,7 +25,11 @@ export default function WeatherCard({ weather }: WeatherCardProps ) {
               </div>
             </div>
           </div>
-          <div className="h-57 bg-white/6 rounded-3xl border border-white/12 shadow-sm p-7 flex flex-col">
+          <button
+            type="button"
+            onClick={() => onSelectDetails(buildCurrentWeatherDetails(weather))}
+            className="h-57 bg-white/6 rounded-3xl border border-white/12 shadow-sm p-7 flex flex-col text-left outline-none hover:bg-white/9 transition-colors"
+          >
             <div className="flex items-center">
                 <WeatherIcon main={weather.weather[0].main} icon={weather.weather[0].icon} size={46} />
                 <p className="text-white font-bold pl-3">{weather.weather[0].main}</p>
@@ -43,7 +48,7 @@ export default function WeatherCard({ weather }: WeatherCardProps ) {
                 <p className="text-white">{formatWind(weather.wind.speed)}</p>
               </div>
             </div>
-          </div>
+          </button>
         </div>
       }
     </>

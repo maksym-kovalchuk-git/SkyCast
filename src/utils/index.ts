@@ -1,3 +1,5 @@
 export { formatTemp } from './formatTemp'
-export { formatWind } from './formatWind'
+export { formatWind, getWindDirectionLabel } from './formatWind'
 export { getDateKey, getTimeLabel } from './dateTime'
+export { calcDewPoint } from './dewPoint'
+export { buildCurrentWeatherDetails, buildHourlyForecastDetails, buildDailyForecastDetails } from './weatherDetails'

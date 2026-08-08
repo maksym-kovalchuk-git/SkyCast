@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import { getCurrentWeather, getForecast } from './api/weather';
-import { type ForecastResponse, type CurrentWeather, type GeoLocation } from './types/weather'
-import { CitySearch, WeatherCard, Forecast, HourlyForecast, WeatherMap } from './components';
+import { type ForecastResponse, type CurrentWeather, type GeoLocation, type WeatherDetails } from './types/weather'
+import { CitySearch, WeatherCard, Forecast, HourlyForecast, WeatherMap, WeatherDetailsModal } from './components';
 
 
 function App() {
@@ -10,6 +10,7 @@ function App() {
   const [forecast, setForecast] = useState<ForecastResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [weatherDetails, setWeatherDetails] = useState<WeatherDetails | null>(null)
 
   async function handleGetWeather(cityName: string) {
     setLoading(true)
@@ -44,11 +45,15 @@ function App() {
       <main className="px-52 pt-4 pb-12 flex flex-col gap-6">
         {loading && <p className="text-slate-500">Loading...</p>}
         {error && <p className="text-red-600">{error}</p>}
-        <WeatherCard weather={weather} />
+        <WeatherCard weather={weather} onSelectDetails={setWeatherDetails} />
         {weather && <WeatherMap lat={weather.coord.lat} lon={weather.coord.lon} city={weather.name} weather={weather.weather[0].main} temp={weather.main.temp} />}
-        <HourlyForecast forecast={forecast} />
-        <Forecast forecast={forecast} />
+        <HourlyForecast forecast={forecast} onSelectDetails={setWeatherDetails} />
+        <Forecast forecast={forecast} onSelectDetails={setWeatherDetails} />
       </main>
+
+      {weatherDetails && (
+        <WeatherDetailsModal details={weatherDetails} onClose={() => setWeatherDetails(null)} />
+      )}
     </div>
   )
 }
