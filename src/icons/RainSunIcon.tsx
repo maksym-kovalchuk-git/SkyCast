@@ -5,7 +5,8 @@ interface IconProps {
 export default function RainSunIcon({ size = 24 }: IconProps) {
   return (
     <div
-      className="rain-icon"
+      aria-hidden="true"
+      className="inline-block rain-icon"
       style={{ width: size, height: size }}
     >
       <span className="inline-block rain-sun-part"></span>

@@ -31,6 +31,7 @@ function App() {
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- standard fetch-on-mount pattern, loading/error state must update synchronously with the request lifecycle
     handleGetWeather('Kyiv')
   }, [])
   return (

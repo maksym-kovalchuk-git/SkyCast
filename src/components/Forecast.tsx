@@ -1,10 +1,6 @@
-import type { ForecastResponse } from "../types/weather"
-import { formatTemp, formatWind } from "../utils"
-import { getWeatherIcon } from "../icons";
-
-interface ForecastProps {
-  forecast: ForecastResponse | null
-}
+import type { ForecastResponse, ForecastSectionProps } from "../types/weather"
+import { formatTemp, formatWind, getDateKey } from "../utils"
+import { WeatherIcon } from "../icons";
 
 type DailyMinMax = {
   min: number;
@@ -26,7 +22,7 @@ function getDailyAverages(list: ForecastResponse['list']): Record<string, DailyA
   const sums: Record<string, { humidity: number; windSpeed: number; count: number }> = {}
 
   for (const item of list) {
-    const date = item.dt_txt.split(' ')[0]
+    const date = getDateKey(item.dt_txt)
     const existing = sums[date] ?? { humidity: 0, windSpeed: 0, count: 0 }
 
     sums[date] = {
@@ -65,7 +61,7 @@ function getDailyCondition(list: ForecastResponse['list']): Record<string, Condi
   const counts: Record<string, Record<string, { count: number; icon: string; description: string }>> = {}
 
   for (const item of list) {
-    const date = item.dt_txt.split(' ')[0]
+    const date = getDateKey(item.dt_txt)
     const { main, icon, description } = item.weather[0]
 
     counts[date] = counts[date] ?? {}
@@ -95,15 +91,15 @@ function getDailyCondition(list: ForecastResponse['list']): Record<string, Condi
   return dominant
 }
 
-export default function Forecast({ forecast }: ForecastProps) {
-  const todayDate = forecast?.list[0]?.dt_txt.split(' ')[0]
+export default function Forecast({ forecast }: ForecastSectionProps) {
+  const todayDate = forecast?.list[0] && getDateKey(forecast.list[0].dt_txt)
 
   const dailyForecast = forecast?.list.filter(item =>
-    item.dt_txt.includes('12:00:00') && item.dt_txt.split(' ')[0] !== todayDate
+    item.dt_txt.includes('12:00:00') && getDateKey(item.dt_txt) !== todayDate
   )
 
   const dailyMinMax: Record<string, DailyMinMax> = forecast?.list.reduce<Record<string, DailyMinMax>>((acc, item) => {
-    const date = item.dt_txt.split(' ')[0];
+    const date = getDateKey(item.dt_txt);
     const temp = item.main.temp;
     const existing = acc[date]
 
@@ -121,9 +117,9 @@ export default function Forecast({ forecast }: ForecastProps) {
     <div>
       {dailyForecast && (<h2 className="text-xl text-white font-bold my-4 ">Daily forecast</h2>)}
       {dailyForecast && (
-        <div className="flex flex-col divide-y divide-white/12 bg-white/6 rounded-3xl border border-white/12">
+        <ul className="flex flex-col divide-y divide-white/12 bg-white/6 rounded-3xl border border-white/12">
           {dailyForecast.map((item) => {
-            const date = item.dt_txt.split(' ')[0]
+            const date = getDateKey(item.dt_txt)
             const { min, max } = dailyMinMax[date]
             const minTemp = formatTemp(min)
             const maxTemp = formatTemp(max)
@@ -131,18 +127,17 @@ export default function Forecast({ forecast }: ForecastProps) {
               weekday: 'short',
             })
             const condition = dailyCondition[date]
-            const Icon = getWeatherIcon(condition.main, condition.icon)
             const { humidity, windSpeed } = dailyAverages[date]
 
             return (
-              <div
+              <li
                 key={item.dt}
                 className="flex gap-4 items-center pl-6 pr-18 justify-between"
               >
                 <div className="flex items-center py-4 gap-24">
-                  <p className="text-sm font-bold text-white">{formattedDate}</p>
-                  <span className="flex">
-                    <Icon size={24} />
+                  <time dateTime={date} className="text-sm font-bold text-white">{formattedDate}</time>
+                  <span className="flex items-center">
+                    <WeatherIcon main={condition.main} icon={condition.icon} size={24} />
                     <p className="text-sm text-white/60 font-semibold pl-3">{condition.description}</p>
                   </span>
                 </div>
@@ -153,10 +148,10 @@ export default function Forecast({ forecast }: ForecastProps) {
                   <p className="text-xs text-white/40 font-semibold">Hum {Math.round(humidity)}%</p>
                   <p className="text-xs text-white/40 font-semibold">{formatWind(windSpeed)}</p>
                 </div>
-              </div>
+              </li>
             )
         })}
-        </div>
+        </ul>
       )}
     </div>
   )

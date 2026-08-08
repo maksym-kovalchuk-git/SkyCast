@@ -4,8 +4,9 @@ interface IconProps {
 
 export default function ThunderstormIcon({ size = 24 }: IconProps) {
   return (
-    <div 
-      className="thunderstorm-icon"
+    <div
+      aria-hidden="true"
+      className="inline-block thunderstorm-icon"
       style={{ width: size, height: size }}
     >
       <span className="inline-block thunderstorm-part1"></span>

@@ -1,17 +1,15 @@
 import type { CurrentWeather } from "../types/weather";
 import { formatTemp, formatWind } from "../utils";
-import { getWeatherIcon } from "../icons";
+import { WeatherIcon } from "../icons";
 
 interface WeatherCardProps {
   weather: CurrentWeather | null;
 }
 
 export default function WeatherCard({ weather }: WeatherCardProps ) {
-  const Icon = weather ? getWeatherIcon(weather.weather[0].main, weather.weather[0].icon) : null
-
   return (
     <>
-      {weather && Icon &&
+      {weather &&
         <div className="grid grid-cols-1 md:grid-cols-[1.35fr_1fr] gap-5">
           <div className="h-57 bg-white/6 rounded-3xl border border-white/12 shadow-sm p-8 flex flex-col">
             <p className='text-sm text-white/50 pb-2 mr-5'>WEATHER IN</p>
@@ -28,7 +26,7 @@ export default function WeatherCard({ weather }: WeatherCardProps ) {
           </div>
           <div className="h-57 bg-white/6 rounded-3xl border border-white/12 shadow-sm p-7 flex flex-col">
             <div className="flex items-center">
-                <Icon size={46} />
+                <WeatherIcon main={weather.weather[0].main} icon={weather.weather[0].icon} size={46} />
                 <p className="text-white font-bold pl-3">{weather.weather[0].main}</p>
             </div>
             <div className="flex flex-col gap-3 text-sm border-t border-white/12 pt-4 mt-auto">

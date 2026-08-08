@@ -4,7 +4,7 @@ interface IconProps {
 
 export default function ClearNightIcon({ size = 24 }: IconProps) {
   return (
-    <div className="sun-night-icon" style={{ width: size, height: size }}>
+    <div aria-hidden="true" className="inline-block sun-night-icon" style={{ width: size, height: size }}>
       <span className=""></span>
     </div>
   )

@@ -4,8 +4,9 @@ interface IconProps {
 
 export default function DrizzleIcon({ size = 24 }: IconProps) {
   return (
-    <div 
-      className="drizzle-icon"
+    <div
+      aria-hidden="true"
+      className="inline-block drizzle-icon"
       style={{ width: size, height: size }}
     >
       <span className="inline-block drizzle-part1"></span>

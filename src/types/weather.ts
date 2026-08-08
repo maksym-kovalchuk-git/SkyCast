@@ -63,3 +63,7 @@ export interface ForecastResponse {
   }
   list: ForecastItem[]
 }
+
+export interface ForecastSectionProps {
+  forecast: ForecastResponse | null
+}

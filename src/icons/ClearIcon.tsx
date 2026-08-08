@@ -4,6 +4,6 @@ interface IconProps {
 
 export default function ClearIcon({ size = 24 }: IconProps) {
   return (
-    <span className="inline-block sun-icon" style={{ width: size, height: size }}></span>
+    <span aria-hidden="true" className="inline-block sun-icon" style={{ width: size, height: size }}></span>
   )
 }

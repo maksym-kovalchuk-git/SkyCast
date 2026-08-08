@@ -4,8 +4,9 @@ interface IconProps {
 
 export default function SnowIcon({ size = 24 }: IconProps) {
   return (
-    <div 
-      className="snow-icon"
+    <div
+      aria-hidden="true"
+      className="inline-block snow-icon"
       style={{ width: size, height: size }}
     >
       <span className="inline-block snow-part1"></span>
