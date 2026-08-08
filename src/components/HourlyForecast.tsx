@@ -1,5 +1,5 @@
 import type { ForecastResponse } from "../types/weather"
-import { formatTemp } from "../utils/formatTemp"
+import { formatTemp } from "../utils"
 import { getWeatherIcon } from "../icons";
 
 interface ForecastProps {

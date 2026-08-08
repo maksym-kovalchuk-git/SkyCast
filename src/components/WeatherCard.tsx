@@ -1,5 +1,5 @@
 import type { CurrentWeather } from "../types/weather";
-import { formatTemp } from "../utils/formatTemp";
+import { formatTemp, formatWind } from "../utils";
 import { getWeatherIcon } from "../icons";
 
 interface WeatherCardProps {
@@ -42,7 +42,7 @@ export default function WeatherCard({ weather }: WeatherCardProps ) {
               </div>
               <div className="flex justify-between">
                 <span className="block text-white/60">Wind</span>
-                <p className="text-white">{Math.round(weather.wind.speed)} m/s</p>
+                <p className="text-white">{formatWind(weather.wind.speed)}</p>
               </div>
             </div>
           </div>

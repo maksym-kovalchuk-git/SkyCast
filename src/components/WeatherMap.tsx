@@ -1,6 +1,6 @@
 import L from 'leaflet'
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
-import { formatTemp } from '../utils/formatTemp'
+import { formatTemp } from '../utils'
 
 const cityMarkerIcon = L.divIcon({
   className: '',

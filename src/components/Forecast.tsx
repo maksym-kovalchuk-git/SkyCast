@@ -1,5 +1,5 @@
 import type { ForecastResponse } from "../types/weather"
-import { formatTemp } from "../utils/formatTemp"
+import { formatTemp, formatWind } from "../utils"
 import { getWeatherIcon } from "../icons";
 
 interface ForecastProps {
@@ -151,7 +151,7 @@ export default function Forecast({ forecast }: ForecastProps) {
                     {maxTemp} <span className="text-white/40">/ {minTemp}</span>
                   </p>
                   <p className="text-xs text-white/40 font-semibold">Hum {Math.round(humidity)}%</p>
-                  <p className="text-xs text-white/40 font-semibold">{Math.round(windSpeed)} m/s</p>
+                  <p className="text-xs text-white/40 font-semibold">{formatWind(windSpeed)}</p>
                 </div>
               </div>
             )
