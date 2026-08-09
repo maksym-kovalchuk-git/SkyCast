@@ -67,6 +67,7 @@ export function buildHourlyForecastDetails(item: ForecastItem, cityName: string)
 interface DailyForecastOverrides {
   cityName: string
   maxTemp: number
+  minTemp: number
   humidity: number
   windSpeed: number
   conditionMain: string
@@ -83,6 +84,7 @@ export function buildDailyForecastDetails(item: ForecastItem, overrides: DailyFo
     date: getDayMonthLabel(date),
     weekday: getWeekdayLabel(date),
     temp: overrides.maxTemp,
+    minTemp: overrides.minTemp,
     feelsLike: item.main.feels_like,
     conditionMain: overrides.conditionMain,
     conditionDescription: overrides.conditionDescription,

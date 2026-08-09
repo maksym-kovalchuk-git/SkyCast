@@ -97,6 +97,7 @@ export interface WeatherDetails {
   weekday: string
   hour?: string
   temp: number
+  minTemp?: number
   feelsLike: number
   conditionMain: string
   conditionDescription: string

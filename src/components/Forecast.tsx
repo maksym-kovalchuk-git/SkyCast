@@ -140,6 +140,7 @@ export default function Forecast({ forecast, onSelectDetails }: ForecastProps) {
                   onClick={() => onSelectDetails(buildDailyForecastDetails(item, {
                     cityName: forecast?.city.name ?? '',
                     maxTemp: max,
+                    minTemp: min,
                     humidity,
                     windSpeed,
                     conditionMain: condition.main,

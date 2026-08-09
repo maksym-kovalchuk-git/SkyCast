@@ -60,7 +60,12 @@ export default function WeatherDetailsModal({ details, onClose }: WeatherDetails
         <div className="flex items-center gap-4 mt-6">
           <WeatherIcon main={details.conditionMain} icon={details.conditionIcon} size={64} />
           <div>
-            <p className="text-5xl text-white font-extrabold leading-none">{formatTemp(details.temp)}</p>
+            <p className="text-5xl text-white font-extrabold leading-none">
+              {formatTemp(details.temp)}
+              {details.minTemp !== undefined && (
+                <span className="text-2xl text-white/40 font-bold"> / {formatTemp(details.minTemp)}</span>
+              )}
+            </p>
             <p className="text-white/60 text-sm mt-1">Feels like {formatTemp(details.feelsLike)}</p>
             <p className="text-white/80 text-sm capitalize">{details.conditionDescription}</p>
           </div>
