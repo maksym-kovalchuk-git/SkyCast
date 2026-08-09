@@ -2,7 +2,18 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import { getCurrentWeather, getForecast } from './api/weather';
 import { type ForecastResponse, type CurrentWeather, type GeoLocation, type WeatherDetails } from './types/weather'
-import { CitySearch, WeatherCard, Forecast, HourlyForecast, WeatherMap, WeatherDetailsModal } from './components';
+import {
+  CitySearch,
+  WeatherCard,
+  Forecast,
+  HourlyForecast,
+  WeatherMap,
+  WeatherDetailsModal,
+  WeatherCardSkeleton,
+  WeatherMapSkeleton,
+  HourlyForecastSkeleton,
+  ForecastSkeleton,
+} from './components';
 import { getSavedCity, saveCity } from './utils';
 
 
@@ -45,12 +56,22 @@ function App() {
       </header>
 
       <main className="px-52 pt-4 pb-12 flex flex-col gap-6">
-        {loading && <p className="text-slate-500">Loading...</p>}
         {error && <p className="text-red-600">{error}</p>}
-        <WeatherCard weather={weather} onSelectDetails={setWeatherDetails} />
-        {weather && <WeatherMap lat={weather.coord.lat} lon={weather.coord.lon} city={weather.name} weather={weather.weather[0].main} temp={weather.main.temp} />}
-        <HourlyForecast forecast={forecast} onSelectDetails={setWeatherDetails} />
-        <Forecast forecast={forecast} onSelectDetails={setWeatherDetails} />
+        {loading ? (
+          <>
+            <WeatherCardSkeleton />
+            <WeatherMapSkeleton />
+            <HourlyForecastSkeleton />
+            <ForecastSkeleton />
+          </>
+        ) : (
+          <>
+            <WeatherCard weather={weather} onSelectDetails={setWeatherDetails} />
+            {weather && <WeatherMap lat={weather.coord.lat} lon={weather.coord.lon} city={weather.name} weather={weather.weather[0].main} temp={weather.main.temp} />}
+            <HourlyForecast forecast={forecast} onSelectDetails={setWeatherDetails} />
+            <Forecast forecast={forecast} onSelectDetails={setWeatherDetails} />
+          </>
+        )}
       </main>
 
       {weatherDetails && (
