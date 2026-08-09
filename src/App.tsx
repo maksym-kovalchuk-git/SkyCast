@@ -13,7 +13,9 @@ import {
   WeatherMapSkeleton,
   HourlyForecastSkeleton,
   ForecastSkeleton,
+  SettingsPanel,
 } from './components';
+import { SettingsIcon } from './icons';
 import { getSavedCity, saveCity } from './utils';
 
 
@@ -23,6 +25,7 @@ function App() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [weatherDetails, setWeatherDetails] = useState<WeatherDetails | null>(null)
+  const [showSettings, setShowSettings] = useState(false)
 
   async function handleGetWeather(cityName: string) {
     setLoading(true)
@@ -52,7 +55,17 @@ function App() {
     <div className="min-h-screen">
       <header className="flex flex-wrap items-center justify-between gap-4 pt-7 pb-7 pr-12 pl-12">
         <h1 className="text-2xl text-white font-extrabold tracking-tight">SkyCast</h1>
-        <CitySearch onSelect={handleSelect} />
+        <div className="flex items-center gap-3">
+          <CitySearch onSelect={handleSelect} />
+          <button
+            type="button"
+            onClick={() => setShowSettings(true)}
+            aria-label="Settings"
+            className="w-11 h-11 shrink-0 flex items-center justify-center rounded-full bg-white/6 border border-white/12 text-white/70 hover:text-white hover:bg-white/10 outline-none transition-colors"
+          >
+            <SettingsIcon size={18} />
+          </button>
+        </div>
       </header>
 
       <main className="px-52 pt-4 pb-12 flex flex-col gap-6">
@@ -77,6 +90,8 @@ function App() {
       {weatherDetails && (
         <WeatherDetailsModal details={weatherDetails} onClose={() => setWeatherDetails(null)} />
       )}
+
+      {showSettings && <SettingsPanel onClose={() => setShowSettings(false)} />}
     </div>
   )
 }

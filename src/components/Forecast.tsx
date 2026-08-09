@@ -1,6 +1,7 @@
 import type { ForecastResponse, ForecastSectionProps, WeatherDetails } from "../types/weather"
 import { formatTemp, formatWind, getDateKey, buildDailyForecastDetails } from "../utils"
 import { WeatherIcon } from "../icons";
+import { useSettings } from "../context/useSettings";
 
 interface ForecastProps extends ForecastSectionProps {
   onSelectDetails: (details: WeatherDetails) => void
@@ -96,6 +97,7 @@ function getDailyCondition(list: ForecastResponse['list']): Record<string, Condi
 }
 
 export default function Forecast({ forecast, onSelectDetails }: ForecastProps) {
+  const { tempUnit } = useSettings()
   const todayDate = forecast?.list[0] && getDateKey(forecast.list[0].dt_txt)
 
   const dailyForecast = forecast?.list.filter(item =>
@@ -125,8 +127,8 @@ export default function Forecast({ forecast, onSelectDetails }: ForecastProps) {
           {dailyForecast.map((item) => {
             const date = getDateKey(item.dt_txt)
             const { min, max } = dailyMinMax[date]
-            const minTemp = formatTemp(min)
-            const maxTemp = formatTemp(max)
+            const minTemp = formatTemp(min, tempUnit)
+            const maxTemp = formatTemp(max, tempUnit)
             const formattedDate = new Date(date).toLocaleDateString('en-US', {
               weekday: 'short',
             })

@@ -1,6 +1,7 @@
-export { formatTemp } from './formatTemp'
+export { formatTemp, type TempUnit } from './formatTemp'
 export { formatWind, getWindDirectionLabel } from './formatWind'
 export { getDateKey, getTimeLabel } from './dateTime'
 export { calcDewPoint } from './dewPoint'
 export { buildCurrentWeatherDetails, buildHourlyForecastDetails, buildDailyForecastDetails } from './weatherDetails'
 export { getSavedCity, saveCity } from './cityStorage'
+export { getSavedTempUnit, saveTempUnit } from './settingsStorage'

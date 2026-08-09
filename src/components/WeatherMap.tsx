@@ -1,6 +1,7 @@
 import L from 'leaflet'
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import { formatTemp } from '../utils'
+import { useSettings } from '../context/useSettings'
 
 const cityMarkerIcon = L.divIcon({
   className: '',
@@ -18,6 +19,8 @@ interface WeatherMapProps {
 }
 
 export default function WeatherMap({ lat, lon, city, weather, temp }: WeatherMapProps) {
+  const { tempUnit } = useSettings()
+
   return (
     <div className="rounded-3xl overflow-hidden border border-white/12">
       <MapContainer
@@ -35,7 +38,7 @@ export default function WeatherMap({ lat, lon, city, weather, temp }: WeatherMap
             <div className='min-w-28 text-xs '>
               <p className='text-sm font-bold'>{city}</p>
               <p className='pt-0.5 text-white/60'>
-                Now: <span className='font-semibold text-white'>{formatTemp(temp)}</span>, {weather}
+                Now: <span className='font-semibold text-white'>{formatTemp(temp, tempUnit)}</span>, {weather}
               </p>
             </div>
           </Popup>

@@ -1,6 +1,7 @@
 import type { CurrentWeather, WeatherDetails } from "../types/weather";
 import { formatTemp, formatWind, buildCurrentWeatherDetails } from "../utils";
 import { WeatherIcon } from "../icons";
+import { useSettings } from "../context/useSettings";
 
 interface WeatherCardProps {
   weather: CurrentWeather | null;
@@ -8,6 +9,8 @@ interface WeatherCardProps {
 }
 
 export default function WeatherCard({ weather, onSelectDetails }: WeatherCardProps ) {
+  const { tempUnit } = useSettings()
+
   return (
     <>
       {weather &&
@@ -17,10 +20,10 @@ export default function WeatherCard({ weather, onSelectDetails }: WeatherCardPro
             <div className="flex flex-col justify-between flex-1">
               <p className="text-3xl text-white font-bold">{weather.name}, {weather.sys.country}</p>
               <div className="flex items-center gap-4">
-                <span className="text-7xl text-white font-extrabold">{formatTemp(weather.main.temp)}</span>
+                <span className="text-7xl text-white font-extrabold">{formatTemp(weather.main.temp, tempUnit)}</span>
                 <div>
                   <span className="text-md text-white font-bold">{weather.weather[0].main}</span>
-                  <p className="text-white/60 text-sm">Feels like {formatTemp(weather.main.feels_like)}</p>
+                  <p className="text-white/60 text-sm">Feels like {formatTemp(weather.main.feels_like, tempUnit)}</p>
                 </div>
               </div>
             </div>

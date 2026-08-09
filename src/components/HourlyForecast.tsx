@@ -1,12 +1,15 @@
 import type { ForecastSectionProps, WeatherDetails } from "../types/weather"
 import { formatTemp, getTimeLabel, buildHourlyForecastDetails } from "../utils"
 import { WeatherIcon } from "../icons";
+import { useSettings } from "../context/useSettings";
 
 interface HourlyForecastProps extends ForecastSectionProps {
   onSelectDetails: (details: WeatherDetails) => void
 }
 
 export default function HourlyForecast({ forecast, onSelectDetails }: HourlyForecastProps) {
+  const { tempUnit } = useSettings()
+
   return (
     <>
       {forecast && (
@@ -24,7 +27,7 @@ export default function HourlyForecast({ forecast, onSelectDetails }: HourlyFore
                     {getTimeLabel(item.dt_txt)}
                   </time>
                   <WeatherIcon main={item.weather[0].main} icon={item.weather[0].icon} size={24} />
-                  <p className="text-white font-extrabold pt-2 text-xl">{formatTemp(item.main.temp)}</p>
+                  <p className="text-white font-extrabold pt-2 text-xl">{formatTemp(item.main.temp, tempUnit)}</p>
                   <p className="text-white/50 text-xs">{item.weather[0].description}</p>
                 </button>
               </li>
