@@ -39,9 +39,11 @@ function App() {
     setLoading(true)
     setError(null)
     try {
-      const dataWeather = await getCurrentWeather(city, language)
+      const [dataWeather, dataForecast] = await Promise.all([
+        getCurrentWeather(city, language),
+        getForecast(city, language),
+      ])
       setWeather(dataWeather)
-      const dataForecast = await getForecast(city, language)
       setForecast(dataForecast)
     } catch (e) {
       setError( e instanceof Error ? e.message : somethingWrongMessage)
