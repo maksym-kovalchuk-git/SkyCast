@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react"
 import { getCitySuggestions } from '../api/weather';
 import type { GeoLocation } from '../types/weather'
+import { useTranslation } from '../i18n'
 
 interface CitySearchProps {
   onSelect: (loc: GeoLocation) => void
 }
 
 export default function CitySearch({ onSelect }: CitySearchProps) {
+  const { t, language } = useTranslation()
+  const somethingWrongMessage = t('somethingWrong')
   const [inputSearch, setInputSearch] = useState('')
   const [suggestions, setSuggestions] = useState<GeoLocation[]>([])
   const [suggestionsError, setSuggestionsError] = useState('')
@@ -31,7 +34,7 @@ export default function CitySearch({ onSelect }: CitySearchProps) {
       })
       .catch((e) => {
         if (!ignore) {
-          setSuggestionsError(e instanceof Error ? e.message : 'Something went wrong')
+          setSuggestionsError(e instanceof Error ? e.message : somethingWrongMessage)
           setSuggestions([])
         }
       })
@@ -41,7 +44,7 @@ export default function CitySearch({ onSelect }: CitySearchProps) {
       ignore = true
       clearTimeout(timeoutId)
     }
-  }, [inputSearch])
+  }, [inputSearch, somethingWrongMessage])
 
   function handleSelect(loc: GeoLocation) {
     setSuggestions([])
@@ -87,7 +90,7 @@ export default function CitySearch({ onSelect }: CitySearchProps) {
         <input
           type='text'
           value={inputSearch}
-          placeholder="Search city..."
+          placeholder={t('searchPlaceholder')}
           onChange={(e) => {setInputSearch(e.target.value)}}
           onKeyDown={handleKeyDown}
           role="combobox"
@@ -112,7 +115,7 @@ export default function CitySearch({ onSelect }: CitySearchProps) {
                 i === activeIndex ? 'bg-white/20 text-white' : 'text-white/80 hover:bg-white/10'
               }`}
             >
-              {s.local_names?.en ?? s.name}{s.state ? `, ${s.state}` : ''}, {s.country}
+              {s.local_names?.[language] ?? s.name}{s.state ? `, ${s.state}` : ''}, {s.country}
             </button>
           </li>
         ))}

@@ -1,8 +1,16 @@
 export { formatTemp, type TempUnit } from './formatTemp'
 export { formatPressure, type PressureUnit } from './formatPressure'
 export { formatWind, getWindDirectionLabel } from './formatWind'
+export { formatVisibility } from './formatVisibility'
 export { getDateKey, getTimeLabel } from './dateTime'
 export { calcDewPoint } from './dewPoint'
 export { buildCurrentWeatherDetails, buildHourlyForecastDetails, buildDailyForecastDetails } from './weatherDetails'
-export { getSavedCity, saveCity } from './cityStorage'
-export { getSavedTempUnit, saveTempUnit, getSavedPressureUnit, savePressureUnit } from './settingsStorage'
+export { getSavedCity, saveCity, getSavedCityLocalNames } from './cityStorage'
+export {
+  getSavedTempUnit,
+  saveTempUnit,
+  getSavedPressureUnit,
+  savePressureUnit,
+  getSavedLanguage,
+  saveLanguage,
+} from './settingsStorage'

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import './App.css'
 import { getCurrentWeather, getForecast } from './api/weather';
 import { type ForecastResponse, type CurrentWeather, type GeoLocation, type WeatherDetails } from './types/weather'
@@ -16,41 +16,48 @@ import {
   SettingsPanel,
 } from './components';
 import { SettingsIcon } from './icons';
-import { getSavedCity, saveCity } from './utils';
+import { getSavedCity, getSavedCityLocalNames, saveCity } from './utils';
+import { useTranslation } from './i18n';
 
 
 function App() {
+  const { t, language } = useTranslation()
   const [weather, setWeather] = useState<CurrentWeather | null>(null)
   const [forecast, setForecast] = useState<ForecastResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [weatherDetails, setWeatherDetails] = useState<WeatherDetails | null>(null)
   const [showSettings, setShowSettings] = useState(false)
+  const [cityName, setCityName] = useState(() => getSavedCity() ?? 'Kyiv')
+  const [cityLocalNames, setCityLocalNames] = useState(() => getSavedCityLocalNames())
+  const somethingWrongMessage = t('somethingWrong')
+  const displayCityName = cityLocalNames?.[language] ?? weather?.name ?? cityName
 
-  async function handleGetWeather(cityName: string) {
+  const handleGetWeather = useCallback(async (city: string) => {
     setLoading(true)
     setError(null)
     try {
-      const dataWeather = await getCurrentWeather(cityName)
+      const dataWeather = await getCurrentWeather(city, language)
       setWeather(dataWeather)
-      const dataForecast = await getForecast(cityName)
+      const dataForecast = await getForecast(city, language)
       setForecast(dataForecast)
     } catch (e) {
-      setError( e instanceof Error ? e.message : 'Something went wrong')
+      setError( e instanceof Error ? e.message : somethingWrongMessage)
     } finally {
       setLoading(false)
     }
-  }
+  }, [language, somethingWrongMessage])
 
   function handleSelect(loc: GeoLocation) {
-    saveCity(loc.name)
-    handleGetWeather(loc.name)
+    saveCity(loc.name, loc.local_names)
+    setCityLocalNames(loc.local_names)
+    setCityName(loc.name)
   }
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- standard fetch-on-mount pattern, loading/error state must update synchronously with the request lifecycle
-    handleGetWeather(getSavedCity() ?? 'Kyiv')
-  }, [])
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch on mount and whenever the selected city or language changes
+    handleGetWeather(cityName)
+  }, [cityName, handleGetWeather])
   return (
     <div className="min-h-screen">
       <header className="flex flex-wrap items-center justify-between gap-4 pt-7 pb-7 pr-12 pl-12">
@@ -60,7 +67,7 @@ function App() {
           <button
             type="button"
             onClick={() => setShowSettings(true)}
-            aria-label="Settings"
+            aria-label={t('settings')}
             className="w-11 h-11 shrink-0 flex items-center justify-center rounded-full bg-white/6 border border-white/12 text-white/70 hover:text-white hover:bg-white/10 outline-none transition-colors"
           >
             <SettingsIcon size={18} />
@@ -79,10 +86,10 @@ function App() {
           </>
         ) : (
           <>
-            <WeatherCard weather={weather} onSelectDetails={setWeatherDetails} />
-            {weather && <WeatherMap lat={weather.coord.lat} lon={weather.coord.lon} city={weather.name} weather={weather.weather[0].main} temp={weather.main.temp} />}
-            <HourlyForecast forecast={forecast} onSelectDetails={setWeatherDetails} />
-            <Forecast forecast={forecast} onSelectDetails={setWeatherDetails} />
+            <WeatherCard weather={weather} cityName={displayCityName} onSelectDetails={setWeatherDetails} />
+            {weather && <WeatherMap lat={weather.coord.lat} lon={weather.coord.lon} city={displayCityName} weather={weather.weather[0].main} temp={weather.main.temp} />}
+            <HourlyForecast forecast={forecast} cityName={displayCityName} onSelectDetails={setWeatherDetails} />
+            <Forecast forecast={forecast} cityName={displayCityName} onSelectDetails={setWeatherDetails} />
           </>
         )}
       </main>

@@ -1,4 +1,5 @@
 import { useEffect, useRef, type ReactNode } from 'react'
+import { useTranslation } from '../i18n'
 
 interface ModalProps {
   onClose: () => void
@@ -9,6 +10,7 @@ interface ModalProps {
 
 export default function Modal({ onClose, ariaLabel, panelClassName = '', children }: ModalProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null)
+  const { t } = useTranslation()
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -39,7 +41,7 @@ export default function Modal({ onClose, ariaLabel, panelClassName = '', childre
           ref={closeButtonRef}
           type="button"
           onClick={onClose}
-          aria-label="Close"
+          aria-label={t('close')}
           className="absolute top-5 right-5 w-8 h-8 flex items-center justify-center rounded-full text-white/60 hover:bg-white/10 hover:text-white outline-none transition-colors"
         >
           <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">

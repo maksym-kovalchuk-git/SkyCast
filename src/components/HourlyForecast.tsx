@@ -2,25 +2,28 @@ import type { ForecastSectionProps, WeatherDetails } from "../types/weather"
 import { formatTemp, getTimeLabel, buildHourlyForecastDetails } from "../utils"
 import { WeatherIcon } from "../icons";
 import { useSettings } from "../context/useSettings";
+import { useTranslation } from "../i18n";
 
 interface HourlyForecastProps extends ForecastSectionProps {
+  cityName: string
   onSelectDetails: (details: WeatherDetails) => void
 }
 
-export default function HourlyForecast({ forecast, onSelectDetails }: HourlyForecastProps) {
+export default function HourlyForecast({ forecast, cityName, onSelectDetails }: HourlyForecastProps) {
   const { tempUnit } = useSettings()
+  const { t, language } = useTranslation()
 
   return (
     <>
       {forecast && (
         <div>
-          <h2 className="text-xl text-white font-bold my-3">Hourly forecast</h2>
+          <h2 className="text-xl text-white font-bold my-3">{t('hourlyForecast')}</h2>
           <ul className="hourly-scroll flex overflow-x-auto gap-4 pb-2">
             {forecast.list.slice(0, 12).map((item) => (
               <li key={item.dt} className="shrink-0">
                 <button
                   type="button"
-                  onClick={() => onSelectDetails(buildHourlyForecastDetails(item, forecast.city.name))}
+                  onClick={() => onSelectDetails(buildHourlyForecastDetails(item, cityName, language))}
                   className="w-32 p-4 text-center pb-4 bg-white/6 border border-white/12 rounded-2xl shadow-sm outline-none hover:bg-white/9 transition-colors"
                 >
                   <time dateTime={item.dt_txt} className="block text-sm text-white/60 pb-2">

@@ -2,8 +2,10 @@ import type { ForecastResponse, ForecastSectionProps, WeatherDetails } from "../
 import { formatTemp, formatWind, getDateKey, buildDailyForecastDetails } from "../utils"
 import { WeatherIcon } from "../icons";
 import { useSettings } from "../context/useSettings";
+import { useTranslation, getLocale } from "../i18n";
 
 interface ForecastProps extends ForecastSectionProps {
+  cityName: string
   onSelectDetails: (details: WeatherDetails) => void
 }
 
@@ -96,8 +98,10 @@ function getDailyCondition(list: ForecastResponse['list']): Record<string, Condi
   return dominant
 }
 
-export default function Forecast({ forecast, onSelectDetails }: ForecastProps) {
+export default function Forecast({ forecast, cityName, onSelectDetails }: ForecastProps) {
   const { tempUnit } = useSettings()
+  const { t, language } = useTranslation()
+  const locale = getLocale(language)
   const todayDate = forecast?.list[0] && getDateKey(forecast.list[0].dt_txt)
 
   const dailyForecast = forecast?.list.filter(item =>
@@ -121,7 +125,7 @@ export default function Forecast({ forecast, onSelectDetails }: ForecastProps) {
 
   return (
     <div>
-      {dailyForecast && (<h2 className="text-xl text-white font-bold my-4 ">Daily forecast</h2>)}
+      {dailyForecast && (<h2 className="text-xl text-white font-bold my-4 ">{t('dailyForecast')}</h2>)}
       {dailyForecast && (
         <ul className="flex flex-col divide-y divide-white/12 bg-white/6 rounded-3xl border border-white/12">
           {dailyForecast.map((item) => {
@@ -129,7 +133,7 @@ export default function Forecast({ forecast, onSelectDetails }: ForecastProps) {
             const { min, max } = dailyMinMax[date]
             const minTemp = formatTemp(min, tempUnit)
             const maxTemp = formatTemp(max, tempUnit)
-            const formattedDate = new Date(date).toLocaleDateString('en-US', {
+            const formattedDate = new Date(date).toLocaleDateString(locale, {
               weekday: 'short',
             })
             const condition = dailyCondition[date]
@@ -140,7 +144,7 @@ export default function Forecast({ forecast, onSelectDetails }: ForecastProps) {
                 <button
                   type="button"
                   onClick={() => onSelectDetails(buildDailyForecastDetails(item, {
-                    cityName: forecast?.city.name ?? '',
+                    cityName,
                     maxTemp: max,
                     minTemp: min,
                     humidity,
@@ -148,7 +152,7 @@ export default function Forecast({ forecast, onSelectDetails }: ForecastProps) {
                     conditionMain: condition.main,
                     conditionDescription: condition.description,
                     conditionIcon: condition.icon,
-                  }))}
+                  }, language))}
                   className="w-full flex gap-4 items-center pl-6 pr-18 justify-between text-left outline-none hover:bg-white/6 transition-colors"
                 >
                   <div className="flex items-center py-4 gap-24">
@@ -162,8 +166,8 @@ export default function Forecast({ forecast, onSelectDetails }: ForecastProps) {
                     <p className="text-white font-semibold text-sm">
                       {maxTemp} <span className="text-white/40">/ {minTemp}</span>
                     </p>
-                    <p className="text-xs text-white/40 font-semibold">Hum {Math.round(humidity)}%</p>
-                    <p className="text-xs text-white/40 font-semibold">{formatWind(windSpeed)}</p>
+                    <p className="text-xs text-white/40 font-semibold">{t('humidityShort')} {Math.round(humidity)}%</p>
+                    <p className="text-xs text-white/40 font-semibold">{formatWind(windSpeed, language)}</p>
                   </div>
                 </button>
               </li>

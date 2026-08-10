@@ -14,14 +14,14 @@ export function getLocalDateFromUnix(unixSeconds: number, timezoneOffsetSeconds:
   return new Date((unixSeconds + timezoneOffsetSeconds) * 1000)
 }
 
-export function getDayMonthLabel(date: Date): string {
+export function getDayMonthLabel(date: Date, locale: string): string {
   const day = String(date.getUTCDate()).padStart(2, '0')
-  const month = date.toLocaleDateString('en-US', { month: 'long', timeZone: 'UTC' })
+  const month = date.toLocaleDateString(locale, { month: 'long', timeZone: 'UTC' })
   return `${day}-${month}`
 }
 
-export function getWeekdayLabel(date: Date): string {
-  return date.toLocaleDateString('en-US', { weekday: 'long', timeZone: 'UTC' })
+export function getWeekdayLabel(date: Date, locale: string): string {
+  return date.toLocaleDateString(locale, { weekday: 'long', timeZone: 'UTC' })
 }
 
 export function getHourLabel(date: Date): string {

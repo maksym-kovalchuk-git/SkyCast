@@ -1,0 +1,75 @@
+import type { Language } from './language'
+
+export const translations = {
+  en: {
+    weatherIn: 'WEATHER IN',
+    feelsLike: 'Feels like',
+    humidity: 'Humidity',
+    pressure: 'Pressure',
+    wind: 'Wind',
+    hourlyForecast: 'Hourly forecast',
+    dailyForecast: 'Daily forecast',
+    humidityShort: 'Hum',
+    dewPoint: 'Dew point',
+    cloudCover: 'Cloud cover',
+    visibility: 'Visibility',
+    precipitation: 'Precipitation',
+    sun: 'Sun',
+    from: 'From',
+    gusts: 'Gusts',
+    close: 'Close',
+    settings: 'Settings',
+    temperature: 'Temperature',
+    language: 'Language',
+    searchPlaceholder: 'Search city...',
+    somethingWrong: 'Something went wrong',
+    now: 'Now',
+  },
+  uk: {
+    weatherIn: 'ПОГОДА В',
+    feelsLike: 'Відчувається як',
+    humidity: 'Вологість',
+    pressure: 'Тиск',
+    wind: 'Вітер',
+    hourlyForecast: 'Погодинний прогноз',
+    dailyForecast: 'Прогноз на дні',
+    humidityShort: 'Волог',
+    dewPoint: 'Точка роси',
+    cloudCover: 'Хмарність',
+    visibility: 'Видимість',
+    precipitation: 'Опади',
+    sun: 'Сонце',
+    from: 'З',
+    gusts: 'Пориви',
+    close: 'Закрити',
+    settings: 'Налаштування',
+    temperature: 'Температура',
+    language: 'Мова',
+    searchPlaceholder: 'Пошук міста...',
+    somethingWrong: 'Щось пішло не так',
+    now: 'Зараз',
+  },
+} as const satisfies Record<Language, Record<string, string>>
+
+export type TranslationKey = keyof (typeof translations)['en']
+
+const conditionMainTranslations: Record<Language, Record<string, string>> = {
+  en: {},
+  uk: {
+    Clear: 'Ясно',
+    Clouds: 'Хмарно',
+    Rain: 'Дощ',
+    Drizzle: 'Мряка',
+    Thunderstorm: 'Гроза',
+    Snow: 'Сніг',
+    Mist: 'Туман',
+    Smoke: 'Димка',
+    Haze: 'Імла',
+    Dust: 'Пилюка',
+    Fog: 'Туман',
+  },
+}
+
+export function translateConditionMain(main: string, language: Language): string {
+  return conditionMainTranslations[language][main] ?? main
+}

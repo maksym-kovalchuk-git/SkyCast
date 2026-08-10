@@ -8,16 +8,18 @@ import {
   getWeekdayLabel,
   parseForecastDate,
 } from './dateTime'
+import { getLocale, type Language } from '../i18n/language'
 
-export function buildCurrentWeatherDetails(weather: CurrentWeather): WeatherDetails {
+export function buildCurrentWeatherDetails(weather: CurrentWeather, language: Language, cityName: string): WeatherDetails {
+  const locale = getLocale(language)
   const localDate = getLocalDateFromUnix(weather.dt, weather.timezone)
   const condition = weather.weather[0]
 
   return {
     source: 'current',
-    cityName: weather.name,
-    date: getDayMonthLabel(localDate),
-    weekday: getWeekdayLabel(localDate),
+    cityName,
+    date: getDayMonthLabel(localDate, locale),
+    weekday: getWeekdayLabel(localDate, locale),
     hour: getHourLabel(localDate),
     temp: weather.main.temp,
     feelsLike: weather.main.feels_like,
@@ -37,15 +39,16 @@ export function buildCurrentWeatherDetails(weather: CurrentWeather): WeatherDeta
   }
 }
 
-export function buildHourlyForecastDetails(item: ForecastItem, cityName: string): WeatherDetails {
+export function buildHourlyForecastDetails(item: ForecastItem, cityName: string, language: Language): WeatherDetails {
+  const locale = getLocale(language)
   const date = parseForecastDate(item.dt_txt)
   const condition = item.weather[0]
 
   return {
     source: 'hourly',
     cityName,
-    date: getDayMonthLabel(date),
-    weekday: getWeekdayLabel(date),
+    date: getDayMonthLabel(date, locale),
+    weekday: getWeekdayLabel(date, locale),
     hour: getTimeLabel(item.dt_txt),
     temp: item.main.temp,
     feelsLike: item.main.feels_like,
@@ -75,14 +78,19 @@ interface DailyForecastOverrides {
   conditionIcon: string
 }
 
-export function buildDailyForecastDetails(item: ForecastItem, overrides: DailyForecastOverrides): WeatherDetails {
+export function buildDailyForecastDetails(
+  item: ForecastItem,
+  overrides: DailyForecastOverrides,
+  language: Language,
+): WeatherDetails {
+  const locale = getLocale(language)
   const date = parseForecastDate(item.dt_txt)
 
   return {
     source: 'daily',
     cityName: overrides.cityName,
-    date: getDayMonthLabel(date),
-    weekday: getWeekdayLabel(date),
+    date: getDayMonthLabel(date, locale),
+    weekday: getWeekdayLabel(date, locale),
     temp: overrides.maxTemp,
     minTemp: overrides.minTemp,
     feelsLike: item.main.feels_like,

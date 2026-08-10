@@ -1,14 +1,18 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 
+const SUPPORTED_LANGS = new Set(['en', 'uk'])
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const { city } = req.query
+  const { city, lang } = req.query
 
   if (!city || typeof city !== 'string') {
     return res.status(400).json({ error: 'Missing "city" query parameter' })
   }
 
+  const owmLang = typeof lang === 'string' && SUPPORTED_LANGS.has(lang) ? lang : 'en'
+
   const apiKey = process.env.OWM_API_KEY
-  const url = `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(city)}&appid=${apiKey}&units=metric&lang=en`
+  const url = `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(city)}&appid=${apiKey}&units=metric&lang=${owmLang}`
 
   try {
     const owmRes = await fetch(url)

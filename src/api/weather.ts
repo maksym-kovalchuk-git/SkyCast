@@ -1,7 +1,8 @@
 import type { CurrentWeather, ForecastResponse, GeoLocation, WeatherApiError } from '../types/weather'
+import type { Language } from '../i18n/language'
 
-export async function getCurrentWeather(city: string): Promise<CurrentWeather> {
-  const res = await fetch(`/api/weather?city=${encodeURIComponent(city)}`)
+export async function getCurrentWeather(city: string, lang: Language): Promise<CurrentWeather> {
+  const res = await fetch(`/api/weather?city=${encodeURIComponent(city)}&lang=${lang}`)
   const data = await res.json()
 
   if (!res.ok) {
@@ -22,8 +23,8 @@ export async function getCitySuggestions(query: string): Promise<GeoLocation[]> 
   return data as GeoLocation[]
 }
 
-export async function getForecast(city: string): Promise<ForecastResponse> {
-  const res = await fetch(`/api/forecast?city=${encodeURIComponent(city)}`)
+export async function getForecast(city: string, lang: Language): Promise<ForecastResponse> {
+  const res = await fetch(`/api/forecast?city=${encodeURIComponent(city)}&lang=${lang}`)
   const data = await res.json()
 
   if (!res.ok) {
