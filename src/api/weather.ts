@@ -23,6 +23,17 @@ export async function getCitySuggestions(query: string): Promise<GeoLocation[]> 
   return data as GeoLocation[]
 }
 
+export async function getCityByCoords(lat: number, lon: number): Promise<GeoLocation[]> {
+  const res = await fetch(`/api/reverse-geocode?lat=${lat}&lon=${lon}`)
+  const data = await res.json()
+
+  if (!res.ok) {
+    throw new Error((data as WeatherApiError).error ?? 'Failed to resolve location')
+  }
+
+  return data as GeoLocation[]
+}
+
 export async function getForecast(city: string, lang: Language): Promise<ForecastResponse> {
   const res = await fetch(`/api/forecast?city=${encodeURIComponent(city)}&lang=${lang}`)
   const data = await res.json()

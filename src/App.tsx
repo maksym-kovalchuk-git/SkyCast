@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import './App.css'
-import { getCurrentWeather, getForecast } from './api/weather';
+import { getCurrentWeather, getCityByCoords, getForecast } from './api/weather';
 import { type ForecastResponse, type CurrentWeather, type GeoLocation, type WeatherDetails } from './types/weather'
 import {
   CitySearch,
@@ -15,7 +15,7 @@ import {
   ForecastSkeleton,
   SettingsPanel,
 } from './components';
-import { SettingsIcon } from './icons';
+import { SettingsIcon, LocationIcon } from './icons';
 import { getSavedCity, getSavedCityLocalNames, saveCity } from './utils';
 import { useTranslation } from './i18n';
 
@@ -28,6 +28,7 @@ function App() {
   const [loading, setLoading] = useState(false)
   const [weatherDetails, setWeatherDetails] = useState<WeatherDetails | null>(null)
   const [showSettings, setShowSettings] = useState(false)
+  const [locating, setLocating] = useState(false)
   const [cityName, setCityName] = useState(() => getSavedCity() ?? 'Kyiv')
   const [cityLocalNames, setCityLocalNames] = useState(() => getSavedCityLocalNames())
   const somethingWrongMessage = t('somethingWrong')
@@ -54,6 +55,39 @@ function App() {
     setCityName(loc.name)
   }
 
+  function handleLocate() {
+    if (!navigator.geolocation) {
+      setError(t('geolocationUnsupported'))
+      return
+    }
+
+    setLocating(true)
+    setError(null)
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const results = await getCityByCoords(position.coords.latitude, position.coords.longitude)
+          const loc = results[0]
+          if (!loc) {
+            setError(t('locationNotFound'))
+            return
+          }
+          handleSelect(loc)
+        } catch (e) {
+          setError(e instanceof Error ? e.message : somethingWrongMessage)
+        } finally {
+          setLocating(false)
+        }
+      },
+      () => {
+        setError(t('geolocationDenied'))
+        setLocating(false)
+      },
+      { timeout: 10000 },
+    )
+  }
+
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch on mount and whenever the selected city or language changes
     handleGetWeather(cityName)
@@ -64,6 +98,15 @@ function App() {
         <h1 className="text-2xl text-white font-extrabold tracking-tight">SkyCast</h1>
         <div className="flex items-center gap-3">
           <CitySearch onSelect={handleSelect} />
+          <button
+            type="button"
+            onClick={handleLocate}
+            disabled={locating}
+            aria-label={t('useMyLocation')}
+            className="w-11 h-11 shrink-0 flex items-center justify-center rounded-full bg-white/6 border border-white/12 text-white/70 hover:text-white hover:bg-white/10 outline-none transition-colors disabled:opacity-50"
+          >
+            <LocationIcon size={18} />
+          </button>
           <button
             type="button"
             onClick={() => setShowSettings(true)}

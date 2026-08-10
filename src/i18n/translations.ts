@@ -24,6 +24,10 @@ export const translations = {
     searchPlaceholder: 'Search city...',
     somethingWrong: 'Something went wrong',
     now: 'Now',
+    useMyLocation: 'Use my location',
+    geolocationUnsupported: 'Geolocation is not supported by this browser',
+    geolocationDenied: 'Could not access your location',
+    locationNotFound: 'Could not determine a city for your location',
   },
   uk: {
     weatherIn: 'ПОГОДА В',
@@ -48,6 +52,10 @@ export const translations = {
     searchPlaceholder: 'Пошук міста...',
     somethingWrong: 'Щось пішло не так',
     now: 'Зараз',
+    useMyLocation: 'Використати моє місцезнаходження',
+    geolocationUnsupported: 'Цей браузер не підтримує геолокацію',
+    geolocationDenied: 'Не вдалося отримати доступ до вашого місцезнаходження',
+    locationNotFound: 'Не вдалося визначити місто за вашим місцезнаходженням',
   },
 } as const satisfies Record<Language, Record<string, string>>
 
