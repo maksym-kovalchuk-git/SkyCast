@@ -1,5 +1,5 @@
 import type { CurrentWeather, WeatherDetails } from "../types/weather";
-import { formatTemp, formatWind, buildCurrentWeatherDetails } from "../utils";
+import { formatTemp, formatWind, formatPressure, buildCurrentWeatherDetails } from "../utils";
 import { WeatherIcon } from "../icons";
 import { useSettings } from "../context/useSettings";
 
@@ -9,7 +9,7 @@ interface WeatherCardProps {
 }
 
 export default function WeatherCard({ weather, onSelectDetails }: WeatherCardProps ) {
-  const { tempUnit } = useSettings()
+  const { tempUnit, pressureUnit } = useSettings()
 
   return (
     <>
@@ -44,7 +44,7 @@ export default function WeatherCard({ weather, onSelectDetails }: WeatherCardPro
               </div>
               <div className="flex justify-between">
                 <span className="block text-white/60">Pressure</span>
-                <p className="text-white">{weather.main.pressure} hPa</p>
+                <p className="text-white">{formatPressure(weather.main.pressure, pressureUnit)}</p>
               </div>
               <div className="flex justify-between">
                 <span className="block text-white/60">Wind</span>

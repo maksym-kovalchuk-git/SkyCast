@@ -1,5 +1,5 @@
 import type { WeatherDetails } from '../types/weather'
-import { formatTemp, formatWind, getWindDirectionLabel } from '../utils'
+import { formatTemp, formatWind, formatPressure, getWindDirectionLabel } from '../utils'
 import { DropletIcon, SunriseIcon, SunsetIcon, VisibilityIcon, WeatherIcon } from '../icons'
 import { useSettings } from '../context/useSettings'
 import Modal from './Modal'
@@ -13,7 +13,7 @@ interface WeatherDetailsModalProps {
 }
 
 export default function WeatherDetailsModal({ details, onClose }: WeatherDetailsModalProps) {
-  const { tempUnit } = useSettings()
+  const { tempUnit, pressureUnit } = useSettings()
 
   return (
     <Modal onClose={onClose} ariaLabel={`Weather details for ${details.cityName}`} panelClassName="max-w-2xl max-h-[85vh]">
@@ -38,8 +38,8 @@ export default function WeatherDetailsModal({ details, onClose }: WeatherDetails
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-6">
         <StatCard label="Pressure">
-          <p className="text-white text-xl font-bold">{details.pressure} hPa</p>
-          <PressureGauge pressure={details.pressure} />
+          <p className="text-white text-xl font-bold">{formatPressure(details.pressure, pressureUnit)}</p>
+          <PressureGauge pressure={details.pressure} unit={pressureUnit} />
         </StatCard>
 
         <StatCard label="Humidity" icon={<DropletIcon size={16} />}>
