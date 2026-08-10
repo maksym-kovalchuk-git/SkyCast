@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import './App.css'
 import { getCurrentWeather, getCityByCoords, getForecast } from './api/weather';
 import { type ForecastResponse, type CurrentWeather, type GeoLocation, type WeatherDetails } from './types/weather'
@@ -29,6 +29,7 @@ function App() {
   const [weatherDetails, setWeatherDetails] = useState<WeatherDetails | null>(null)
   const [showSettings, setShowSettings] = useState(false)
   const [locating, setLocating] = useState(false)
+  const searchInputRef = useRef<HTMLInputElement>(null)
   const [cityName, setCityName] = useState(() => getSavedCity() ?? 'Kyiv')
   const [cityLocalNames, setCityLocalNames] = useState(() => getSavedCityLocalNames())
   const somethingWrongMessage = t('somethingWrong')
@@ -92,12 +93,29 @@ function App() {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch on mount and whenever the selected city or language changes
     handleGetWeather(cityName)
   }, [cityName, handleGetWeather])
+
+  useEffect(() => {
+    function handleGlobalKeyDown(e: KeyboardEvent) {
+      const isSlashKey = e.code === 'Slash' || e.key === '/' || e.key === '.'
+      if (!isSlashKey || weatherDetails || showSettings) return
+
+      const target = e.target as HTMLElement
+      const isTypingTarget = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable
+      if (isTypingTarget) return
+
+      e.preventDefault()
+      searchInputRef.current?.focus()
+    }
+
+    document.addEventListener('keydown', handleGlobalKeyDown)
+    return () => document.removeEventListener('keydown', handleGlobalKeyDown)
+  }, [weatherDetails, showSettings])
   return (
     <div className="min-h-screen">
       <header className="flex flex-wrap items-center justify-between gap-4 pt-7 pb-7 pr-12 pl-12">
         <h1 className="text-2xl text-white font-extrabold tracking-tight">SkyCast</h1>
         <div className="flex items-center gap-3">
-          <CitySearch onSelect={handleSelect} />
+          <CitySearch ref={searchInputRef} onSelect={handleSelect} />
           <button
             type="button"
             onClick={handleLocate}
