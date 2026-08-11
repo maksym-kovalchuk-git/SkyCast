@@ -2,13 +2,16 @@ import { useState, useEffect, forwardRef } from "react"
 import { getCitySuggestions } from '../api/weather';
 import type { GeoLocation } from '../types/weather'
 import { useTranslation } from '../i18n'
-import { getRecentCities } from '../utils'
+import { getRecentCities, isFavoriteCity } from '../utils'
+import { StarIcon } from '../icons'
 
 interface CitySearchProps {
   onSelect: (loc: GeoLocation) => void
+  favorites: GeoLocation[]
+  onToggleFavorite: (loc: GeoLocation) => void
 }
 
-const CitySearch = forwardRef<HTMLInputElement, CitySearchProps>(function CitySearch({ onSelect }, ref) {
+const CitySearch = forwardRef<HTMLInputElement, CitySearchProps>(function CitySearch({ onSelect, favorites, onToggleFavorite }, ref) {
   const { t, language } = useTranslation()
   const somethingWrongMessage = t('somethingWrong')
   const [inputSearch, setInputSearch] = useState('')
@@ -128,24 +131,40 @@ const CitySearch = forwardRef<HTMLInputElement, CitySearchProps>(function CitySe
             {t('recentSearches')}
           </li>
         )}
-        {visibleList.map((s, i) => (
-          <li key={`${s.lat}-${s.lon}`} role="presentation">
-            <button
-              id={`city-suggestion-${i}`}
-              role="option"
-              aria-selected={i === activeIndex}
-              type="button"
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => handleSelect(s)}
-              onMouseEnter={() => setActiveIndex(i)}
-              className={`w-full text-left px-4 py-2.5 text-sm outline-none cursor-pointer transition-colors ${
-                i === activeIndex ? 'bg-white/20 text-white' : 'text-white/80 hover:bg-white/10'
-              }`}
-            >
-              {s.local_names?.[language] ?? s.name}{s.state ? `, ${s.state}` : ''}, {s.country}
-            </button>
-          </li>
-        ))}
+        {visibleList.map((s, i) => {
+          const favorite = showingRecent && isFavoriteCity(s, favorites)
+
+          return (
+            <li key={`${s.lat}-${s.lon}`} role="presentation" className="flex items-center">
+              <button
+                id={`city-suggestion-${i}`}
+                role="option"
+                aria-selected={i === activeIndex}
+                type="button"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => handleSelect(s)}
+                onMouseEnter={() => setActiveIndex(i)}
+                className={`flex-1 text-left px-4 py-2.5 text-sm outline-none cursor-pointer transition-colors ${
+                  i === activeIndex ? 'bg-white/20 text-white' : 'text-white/80 hover:bg-white/10'
+                }`}
+              >
+                {s.local_names?.[language] ?? s.name}{s.state ? `, ${s.state}` : ''}, {s.country}
+              </button>
+              {showingRecent && (
+                <button
+                  type="button"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => onToggleFavorite(s)}
+                  aria-label={favorite ? t('removeFavorite') : t('addFavorite')}
+                  aria-pressed={favorite}
+                  className={`w-9 h-9 mr-1 shrink-0 flex items-center justify-center rounded-full outline-none hover:bg-white/10 transition-colors ${favorite ? 'text-amber-400' : 'text-white/30'}`}
+                >
+                  <StarIcon size={15} filled={favorite} />
+                </button>
+              )}
+            </li>
+          )
+        })}
         </ul>
       )}
 

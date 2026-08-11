@@ -6,11 +6,13 @@ interface ModalProps {
   ariaLabel: string
   panelClassName?: string
   children: ReactNode
+  position?: 'center' | 'right'
 }
 
-export default function Modal({ onClose, ariaLabel, panelClassName = '', children }: ModalProps) {
+export default function Modal({ onClose, ariaLabel, panelClassName = '', children, position = 'center' }: ModalProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const { t } = useTranslation()
+  const isRight = position === 'right'
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -29,13 +31,17 @@ export default function Modal({ onClose, ariaLabel, panelClassName = '', childre
   }, [onClose])
 
   return (
-    <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-md" onClick={onClose} />
+    <div className={`fixed inset-0 z-[2000] flex ${isRight ? 'justify-end' : 'items-center justify-center p-4'}`}>
+      <div className={`absolute inset-0 bg-black/50 ${isRight ? '' : 'backdrop-blur-md'}`} onClick={onClose} />
       <div
         role="dialog"
         aria-modal="true"
         aria-label={ariaLabel}
-        className={`modal-scroll relative w-full overflow-y-auto bg-white/8 backdrop-blur-2xl border border-white/12 rounded-3xl shadow-2xl p-6 sm:p-8 ${panelClassName}`}
+        className={
+          isRight
+            ? `modal-scroll animate-slide-in-right relative h-full w-full max-w-sm overflow-y-auto bg-white/8 backdrop-blur-2xl border-l border-white/12 shadow-2xl p-6 sm:p-8 ${panelClassName}`
+            : `modal-scroll relative w-full overflow-y-auto bg-white/8 backdrop-blur-2xl border border-white/12 rounded-3xl shadow-2xl p-6 sm:p-8 ${panelClassName}`
+        }
       >
         <button
           ref={closeButtonRef}

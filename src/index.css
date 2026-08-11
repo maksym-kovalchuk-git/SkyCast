@@ -141,6 +141,19 @@ p {
   border-radius: 999px;
 }
 
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.2s ease-out;
+}
+
 .sun-icon {
   border-radius: 50%;
   background: radial-gradient(circle at 35% 30%, #ffcf7a, #f0a35e);

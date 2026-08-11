@@ -1,16 +1,18 @@
 import type { CurrentWeather, WeatherDetails } from "../types/weather";
 import { formatTemp, formatWind, formatPressure, buildCurrentWeatherDetails } from "../utils";
-import { WeatherIcon } from "../icons";
+import { WeatherIcon, StarIcon } from "../icons";
 import { useSettings } from "../context/useSettings";
 import { useTranslation, translateConditionMain } from "../i18n";
 
 interface WeatherCardProps {
   weather: CurrentWeather | null;
   cityName: string;
+  isFavorite: boolean;
+  onToggleFavorite: () => void;
   onSelectDetails: (details: WeatherDetails) => void;
 }
 
-export default function WeatherCard({ weather, cityName, onSelectDetails }: WeatherCardProps ) {
+export default function WeatherCard({ weather, cityName, isFavorite, onToggleFavorite, onSelectDetails }: WeatherCardProps ) {
   const { tempUnit, pressureUnit } = useSettings()
   const { t, language } = useTranslation()
 
@@ -21,7 +23,18 @@ export default function WeatherCard({ weather, cityName, onSelectDetails }: Weat
           <div className="h-57 bg-white/6 rounded-3xl border border-white/12 shadow-sm p-8 flex flex-col">
             <p className='text-sm text-white/50 pb-2 mr-5'>{t('weatherIn')}</p>
             <div className="flex flex-col justify-between flex-1">
-              <p className="text-3xl text-white font-bold">{cityName}, {weather.sys.country}</p>
+              <div className="flex items-center gap-2">
+                <p className="text-3xl text-white font-bold">{cityName}, {weather.sys.country}</p>
+                <button
+                  type="button"
+                  onClick={onToggleFavorite}
+                  aria-label={isFavorite ? t('removeFavorite') : t('addFavorite')}
+                  aria-pressed={isFavorite}
+                  className={`w-9 h-9 shrink-0 flex items-center justify-center rounded-full outline-none hover:bg-white/10 transition-colors ${isFavorite ? 'text-amber-400' : 'text-white/40'}`}
+                >
+                  <StarIcon size={20} filled={isFavorite} />
+                </button>
+              </div>
               <div className="flex items-center gap-4">
                 <span className="text-7xl text-white font-extrabold">{formatTemp(weather.main.temp, tempUnit)}</span>
                 <div>

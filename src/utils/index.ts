@@ -7,6 +7,7 @@ export { calcDewPoint } from './dewPoint'
 export { buildCurrentWeatherDetails, buildHourlyForecastDetails, buildDailyForecastDetails } from './weatherDetails'
 export { getSavedCity, saveCity, getSavedCityLocalNames } from './cityStorage'
 export { getRecentCities, addRecentCity } from './searchHistory'
+export { getFavoriteCities, isFavoriteCity, toggleFavoriteCity } from './favoriteCities'
 export {
   getSavedTempUnit,
   saveTempUnit,

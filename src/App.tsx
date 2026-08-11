@@ -14,9 +14,18 @@ import {
   HourlyForecastSkeleton,
   ForecastSkeleton,
   SettingsPanel,
+  FavoritesPanel,
 } from './components';
-import { SettingsIcon, LocationIcon } from './icons';
-import { getSavedCity, getSavedCityLocalNames, saveCity, addRecentCity } from './utils';
+import { SettingsIcon, LocationIcon, StarIcon } from './icons';
+import {
+  getSavedCity,
+  getSavedCityLocalNames,
+  saveCity,
+  addRecentCity,
+  getFavoriteCities,
+  isFavoriteCity,
+  toggleFavoriteCity,
+} from './utils';
 import { useTranslation } from './i18n';
 
 
@@ -28,12 +37,18 @@ function App() {
   const [loading, setLoading] = useState(false)
   const [weatherDetails, setWeatherDetails] = useState<WeatherDetails | null>(null)
   const [showSettings, setShowSettings] = useState(false)
+  const [showFavorites, setShowFavorites] = useState(false)
   const [locating, setLocating] = useState(false)
   const searchInputRef = useRef<HTMLInputElement>(null)
   const [cityName, setCityName] = useState(() => getSavedCity() ?? 'Kyiv')
   const [cityLocalNames, setCityLocalNames] = useState(() => getSavedCityLocalNames())
+  const [favorites, setFavorites] = useState<GeoLocation[]>(() => getFavoriteCities())
   const somethingWrongMessage = t('somethingWrong')
   const displayCityName = cityLocalNames?.[language] ?? weather?.name ?? cityName
+  const currentLocation: GeoLocation | null = weather
+    ? { name: cityName, local_names: cityLocalNames, lat: weather.coord.lat, lon: weather.coord.lon, country: weather.sys.country }
+    : null
+  const isCurrentFavorite = currentLocation ? isFavoriteCity(currentLocation, favorites) : false
 
   const handleGetWeather = useCallback(async (city: string) => {
     setLoading(true)
@@ -57,6 +72,10 @@ function App() {
     addRecentCity(loc)
     setCityLocalNames(loc.local_names)
     setCityName(loc.name)
+  }
+
+  function handleToggleFavorite(loc: GeoLocation) {
+    setFavorites(toggleFavoriteCity(loc))
   }
 
   function handleLocate() {
@@ -100,7 +119,7 @@ function App() {
   useEffect(() => {
     function handleGlobalKeyDown(e: KeyboardEvent) {
       const isSlashKey = e.code === 'Slash' || e.key === '/' || e.key === '.'
-      if (!isSlashKey || weatherDetails || showSettings) return
+      if (!isSlashKey || weatherDetails || showSettings || showFavorites) return
 
       const target = e.target as HTMLElement
       const isTypingTarget = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable
@@ -112,13 +131,21 @@ function App() {
 
     document.addEventListener('keydown', handleGlobalKeyDown)
     return () => document.removeEventListener('keydown', handleGlobalKeyDown)
-  }, [weatherDetails, showSettings])
+  }, [weatherDetails, showSettings, showFavorites])
   return (
     <div className="min-h-screen">
       <header className="flex flex-wrap items-center justify-between gap-4 pt-7 pb-7 pr-12 pl-12">
         <h1 className="text-2xl text-white font-extrabold tracking-tight">SkyCast</h1>
         <div className="flex items-center gap-3">
-          <CitySearch ref={searchInputRef} onSelect={handleSelect} />
+          <CitySearch ref={searchInputRef} onSelect={handleSelect} favorites={favorites} onToggleFavorite={handleToggleFavorite} />
+          <button
+            type="button"
+            onClick={() => setShowFavorites(true)}
+            aria-label={t('favorites')}
+            className="w-11 h-11 shrink-0 flex items-center justify-center rounded-full bg-white/6 border border-white/12 text-white/70 hover:text-white hover:bg-white/10 outline-none transition-colors"
+          >
+            <StarIcon size={18} filled={favorites.length > 0} />
+          </button>
           <button
             type="button"
             onClick={handleLocate}
@@ -150,7 +177,13 @@ function App() {
           </>
         ) : (
           <>
-            <WeatherCard weather={weather} cityName={displayCityName} onSelectDetails={setWeatherDetails} />
+            <WeatherCard
+              weather={weather}
+              cityName={displayCityName}
+              isFavorite={isCurrentFavorite}
+              onToggleFavorite={() => currentLocation && handleToggleFavorite(currentLocation)}
+              onSelectDetails={setWeatherDetails}
+            />
             {weather && <WeatherMap lat={weather.coord.lat} lon={weather.coord.lon} city={displayCityName} weather={weather.weather[0].main} temp={weather.main.temp} />}
             <HourlyForecast forecast={forecast} cityName={displayCityName} onSelectDetails={setWeatherDetails} />
             <Forecast forecast={forecast} cityName={displayCityName} onSelectDetails={setWeatherDetails} />
@@ -163,6 +196,15 @@ function App() {
       )}
 
       {showSettings && <SettingsPanel onClose={() => setShowSettings(false)} />}
+
+      {showFavorites && (
+        <FavoritesPanel
+          favorites={favorites}
+          onSelect={handleSelect}
+          onToggleFavorite={handleToggleFavorite}
+          onClose={() => setShowFavorites(false)}
+        />
+      )}
     </div>
   )
 }

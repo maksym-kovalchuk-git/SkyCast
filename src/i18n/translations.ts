@@ -29,6 +29,10 @@ export const translations = {
     geolocationDenied: 'Could not access your location',
     locationNotFound: 'Could not determine a city for your location',
     recentSearches: 'Recent',
+    favorites: 'Favorites',
+    noFavorites: 'No favorite cities yet',
+    addFavorite: 'Add to favorites',
+    removeFavorite: 'Remove from favorites',
   },
   uk: {
     weatherIn: 'ПОГОДА В',
@@ -58,6 +62,10 @@ export const translations = {
     geolocationDenied: 'Не вдалося отримати доступ до вашого місцезнаходження',
     locationNotFound: 'Не вдалося визначити місто за вашим місцезнаходженням',
     recentSearches: 'Останні',
+    favorites: 'Обране',
+    noFavorites: 'Ще немає обраних міст',
+    addFavorite: 'Додати в обране',
+    removeFavorite: 'Прибрати з обраного',
   },
 } as const satisfies Record<Language, Record<string, string>>
 
