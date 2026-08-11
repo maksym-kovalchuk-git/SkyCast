@@ -28,6 +28,7 @@ export const translations = {
     geolocationUnsupported: 'Geolocation is not supported by this browser',
     geolocationDenied: 'Could not access your location',
     locationNotFound: 'Could not determine a city for your location',
+    recentSearches: 'Recent',
   },
   uk: {
     weatherIn: 'ПОГОДА В',
@@ -56,6 +57,7 @@ export const translations = {
     geolocationUnsupported: 'Цей браузер не підтримує геолокацію',
     geolocationDenied: 'Не вдалося отримати доступ до вашого місцезнаходження',
     locationNotFound: 'Не вдалося визначити місто за вашим місцезнаходженням',
+    recentSearches: 'Останні',
   },
 } as const satisfies Record<Language, Record<string, string>>
 

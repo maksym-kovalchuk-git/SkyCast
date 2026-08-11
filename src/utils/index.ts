@@ -6,6 +6,7 @@ export { getDateKey, getTimeLabel } from './dateTime'
 export { calcDewPoint } from './dewPoint'
 export { buildCurrentWeatherDetails, buildHourlyForecastDetails, buildDailyForecastDetails } from './weatherDetails'
 export { getSavedCity, saveCity, getSavedCityLocalNames } from './cityStorage'
+export { getRecentCities, addRecentCity } from './searchHistory'
 export {
   getSavedTempUnit,
   saveTempUnit,

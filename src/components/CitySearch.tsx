@@ -2,6 +2,7 @@ import { useState, useEffect, forwardRef } from "react"
 import { getCitySuggestions } from '../api/weather';
 import type { GeoLocation } from '../types/weather'
 import { useTranslation } from '../i18n'
+import { getRecentCities } from '../utils'
 
 interface CitySearchProps {
   onSelect: (loc: GeoLocation) => void
@@ -15,6 +16,10 @@ const CitySearch = forwardRef<HTMLInputElement, CitySearchProps>(function CitySe
   const [suggestionsError, setSuggestionsError] = useState('')
   const [activeIndex, setActiveIndex] = useState(-1)
   const [focused, setFocused] = useState(false)
+  const [recentCities, setRecentCities] = useState<GeoLocation[]>(() => getRecentCities())
+
+  const visibleList = inputSearch ? suggestions : recentCities
+  const showingRecent = !inputSearch && recentCities.length > 0
 
   useEffect(() => {
     setSuggestionsError('')
@@ -51,21 +56,23 @@ const CitySearch = forwardRef<HTMLInputElement, CitySearchProps>(function CitySe
     setActiveIndex(-1)
     setInputSearch('')
     onSelect(loc)
+    setRecentCities(getRecentCities())
+    ;(document.activeElement as HTMLElement | null)?.blur()
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (suggestions.length === 0) return
+    if (visibleList.length === 0) return
 
     if (e.key === 'ArrowDown') {
       e.preventDefault()
-      setActiveIndex((i) => (i + 1) % suggestions.length)
+      setActiveIndex((i) => (i + 1) % visibleList.length)
     } else if (e.key === 'ArrowUp') {
       e.preventDefault()
-      setActiveIndex((i) => (i - 1 + suggestions.length) % suggestions.length)
+      setActiveIndex((i) => (i - 1 + visibleList.length) % visibleList.length)
     } else if (e.key === 'Enter') {
       if (activeIndex >= 0) {
         e.preventDefault()
-        handleSelect(suggestions[activeIndex])
+        handleSelect(visibleList[activeIndex])
       }
     } else if (e.key === 'Escape') {
       setSuggestions([])
@@ -94,10 +101,13 @@ const CitySearch = forwardRef<HTMLInputElement, CitySearchProps>(function CitySe
           placeholder={t('searchPlaceholder')}
           onChange={(e) => {setInputSearch(e.target.value)}}
           onKeyDown={handleKeyDown}
-          onFocus={() => setFocused(true)}
+          onFocus={() => {
+            setFocused(true)
+            setRecentCities(getRecentCities())
+          }}
           onBlur={() => setFocused(false)}
           role="combobox"
-          aria-expanded={suggestions.length > 0}
+          aria-expanded={focused && visibleList.length > 0}
           aria-controls="city-suggestions"
           aria-activedescendant={activeIndex >= 0 ? `city-suggestion-${activeIndex}` : undefined}
           className='h-11 bg-white/6 border border-white/12 rounded-3xl pl-9 pr-9 py-2 w-full text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20'
@@ -111,15 +121,21 @@ const CitySearch = forwardRef<HTMLInputElement, CitySearchProps>(function CitySe
           </kbd>
         )}
       </div>
-      {suggestions.length > 0 && (
+      {focused && visibleList.length > 0 && (
         <ul id="city-suggestions" role="listbox" className="absolute top-full left-0 w-full mt-2 bg-white/8 backdrop-blur-md border border-white/12 rounded-2xl shadow-lg overflow-hidden z-10">
-        {suggestions.map((s, i) => (
+        {showingRecent && (
+          <li role="presentation" className="px-4 pt-2.5 pb-1 text-[10px] font-semibold uppercase tracking-wide text-white/40">
+            {t('recentSearches')}
+          </li>
+        )}
+        {visibleList.map((s, i) => (
           <li key={`${s.lat}-${s.lon}`} role="presentation">
             <button
               id={`city-suggestion-${i}`}
               role="option"
               aria-selected={i === activeIndex}
               type="button"
+              onMouseDown={(e) => e.preventDefault()}
               onClick={() => handleSelect(s)}
               onMouseEnter={() => setActiveIndex(i)}
               className={`w-full text-left px-4 py-2.5 text-sm outline-none cursor-pointer transition-colors ${

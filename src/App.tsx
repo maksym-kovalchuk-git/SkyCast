@@ -16,7 +16,7 @@ import {
   SettingsPanel,
 } from './components';
 import { SettingsIcon, LocationIcon } from './icons';
-import { getSavedCity, getSavedCityLocalNames, saveCity } from './utils';
+import { getSavedCity, getSavedCityLocalNames, saveCity, addRecentCity } from './utils';
 import { useTranslation } from './i18n';
 
 
@@ -54,6 +54,7 @@ function App() {
 
   function handleSelect(loc: GeoLocation) {
     saveCity(loc.name, loc.local_names)
+    addRecentCity(loc)
     setCityLocalNames(loc.local_names)
     setCityName(loc.name)
   }
