@@ -1,6 +1,6 @@
 import { useSettings } from '../context/useSettings'
 import { useTranslation, type Language } from '../i18n'
-import type { TempUnit, PressureUnit } from '../utils'
+import type { TempUnit, PressureUnit, DesignMode } from '../utils'
 import Modal from './Modal'
 
 interface SettingsPanelProps {
@@ -23,8 +23,13 @@ const LANGUAGES: { value: Language; label: string }[] = [
 ]
 
 export default function SettingsPanel({ onClose }: SettingsPanelProps) {
-  const { tempUnit, setTempUnit, pressureUnit, setPressureUnit, language, setLanguage } = useSettings()
+  const { tempUnit, setTempUnit, pressureUnit, setPressureUnit, language, setLanguage, designMode, setDesignMode } = useSettings()
   const { t } = useTranslation()
+
+  const DESIGN_MODES: { value: DesignMode; label: string }[] = [
+    { value: 'standard', label: t('designStandard') },
+    { value: 'adaptive', label: t('designAdaptive') },
+  ]
 
   return (
     <Modal onClose={onClose} ariaLabel={t('settings')} panelClassName="max-w-sm">
@@ -80,6 +85,25 @@ export default function SettingsPanel({ onClose }: SettingsPanelProps) {
                 aria-pressed={pressureUnit === value}
                 className={`px-3 py-1 text-sm rounded-full outline-none transition-colors ${
                   pressureUnit === value ? 'bg-white/20 text-white' : 'text-white/50 hover:text-white/80'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-white/70">{t('design')}</span>
+          <div className="flex bg-white/6 border border-white/12 rounded-full p-1">
+            {DESIGN_MODES.map(({ value, label }) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setDesignMode(value)}
+                aria-pressed={designMode === value}
+                className={`px-3 py-1 text-sm rounded-full outline-none transition-colors ${
+                  designMode === value ? 'bg-white/20 text-white' : 'text-white/50 hover:text-white/80'
                 }`}
               >
                 {label}

@@ -15,6 +15,7 @@ import {
   ForecastSkeleton,
   SettingsPanel,
   FavoritesPanel,
+  WeatherParticles,
 } from './components';
 import { SettingsIcon, LocationIcon, StarIcon } from './icons';
 import {
@@ -25,12 +26,15 @@ import {
   getFavoriteCities,
   isFavoriteCity,
   toggleFavoriteCity,
+  getWeatherBackground,
 } from './utils';
 import { useTranslation } from './i18n';
+import { useSettings } from './context/useSettings';
 
 
 function App() {
   const { t, language } = useTranslation()
+  const { designMode } = useSettings()
   const [weather, setWeather] = useState<CurrentWeather | null>(null)
   const [forecast, setForecast] = useState<ForecastResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -49,6 +53,10 @@ function App() {
     ? { name: cityName, local_names: cityLocalNames, lat: weather.coord.lat, lon: weather.coord.lon, country: weather.sys.country }
     : null
   const isCurrentFavorite = currentLocation ? isFavoriteCity(currentLocation, favorites) : false
+  const conditionMain = weather?.weather[0]?.main
+  const isDay = weather?.weather[0]?.icon.endsWith('d') ?? true
+  const adaptiveBackground =
+    designMode === 'adaptive' && weather ? getWeatherBackground(conditionMain, isDay) : undefined
 
   const handleGetWeather = useCallback(async (city: string) => {
     setLoading(true)
@@ -133,7 +141,11 @@ function App() {
     return () => document.removeEventListener('keydown', handleGlobalKeyDown)
   }, [weatherDetails, showSettings, showFavorites])
   return (
-    <div className="min-h-screen">
+    <div
+      className="min-h-screen isolate"
+      style={adaptiveBackground ? { background: adaptiveBackground, transition: 'background 1s ease' } : undefined}
+    >
+      {adaptiveBackground && conditionMain && <WeatherParticles conditionMain={conditionMain} />}
       <header className="flex flex-wrap items-center justify-between gap-4 pt-7 pb-7 pr-12 pl-12">
         <h1 className="text-2xl text-white font-extrabold tracking-tight">SkyCast</h1>
         <div className="flex items-center gap-3">

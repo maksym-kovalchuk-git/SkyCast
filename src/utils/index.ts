@@ -15,4 +15,8 @@ export {
   savePressureUnit,
   getSavedLanguage,
   saveLanguage,
+  getSavedDesignMode,
+  saveDesignMode,
 } from './settingsStorage'
+export { type DesignMode } from './designMode'
+export { getWeatherBackground } from './weatherBackground'
