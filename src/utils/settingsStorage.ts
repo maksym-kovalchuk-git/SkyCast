@@ -2,10 +2,12 @@ import { getStorageItem, setStorageItem } from './storage'
 import type { TempUnit } from './formatTemp'
 import type { PressureUnit } from './formatPressure'
 import { isLanguage, type Language } from '../i18n/language'
+import type { DesignMode } from './designMode'
 
 const TEMP_UNIT_KEY = 'skycast:tempUnit'
 const PRESSURE_UNIT_KEY = 'skycast:pressureUnit'
 const LANGUAGE_KEY = 'skycast:language'
+const DESIGN_MODE_KEY = 'skycast:designMode'
 
 export function getSavedTempUnit(): TempUnit | null {
   const value = getStorageItem(TEMP_UNIT_KEY)
@@ -32,4 +34,13 @@ export function getSavedLanguage(): Language | null {
 
 export function saveLanguage(language: Language): void {
   setStorageItem(LANGUAGE_KEY, language)
+}
+
+export function getSavedDesignMode(): DesignMode | null {
+  const value = getStorageItem(DESIGN_MODE_KEY)
+  return value === 'standard' || value === 'adaptive' ? value : null
+}
+
+export function saveDesignMode(mode: DesignMode): void {
+  setStorageItem(DESIGN_MODE_KEY, mode)
 }

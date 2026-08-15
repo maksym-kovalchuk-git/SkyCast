@@ -33,6 +33,9 @@ export const translations = {
     noFavorites: 'No favorite cities yet',
     addFavorite: 'Add to favorites',
     removeFavorite: 'Remove from favorites',
+    design: 'Design',
+    designStandard: 'Standard',
+    designAdaptive: 'Adaptive',
   },
   uk: {
     weatherIn: 'ПОГОДА В',
@@ -66,6 +69,9 @@ export const translations = {
     noFavorites: 'Ще немає обраних міст',
     addFavorite: 'Додати в обране',
     removeFavorite: 'Прибрати з обраного',
+    design: 'Дизайн',
+    designStandard: 'Стандартний',
+    designAdaptive: 'Адаптивний',
   },
 } as const satisfies Record<Language, Record<string, string>>
 

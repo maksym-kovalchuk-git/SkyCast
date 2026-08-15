@@ -154,6 +154,80 @@ p {
   animation: slide-in-right 0.2s ease-out;
 }
 
+.weather-particles {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+@keyframes particle-rain-fall {
+  from {
+    transform: translateY(-10vh);
+  }
+  to {
+    transform: translateY(110vh);
+  }
+}
+
+.rain-drop-particle {
+  position: absolute;
+  top: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(180, 210, 255, 0.55) 55%, transparent);
+  animation-name: particle-rain-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-fill-mode: backwards;
+}
+
+@keyframes particle-snow-fall {
+  from {
+    transform: translate(0, -10vh);
+  }
+  50% {
+    transform: translate(20px, 50vh);
+  }
+  to {
+    transform: translate(0, 110vh);
+  }
+}
+
+.snow-flake-particle {
+  position: absolute;
+  top: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.75);
+  animation-name: particle-snow-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-fill-mode: backwards;
+}
+
+@keyframes lightning-flash {
+  0%, 92%, 100% {
+    opacity: 0;
+  }
+  93%, 96% {
+    opacity: 0.5;
+  }
+  94%, 97% {
+    opacity: 0;
+  }
+}
+
+.lightning-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background: white;
+  pointer-events: none;
+  animation: lightning-flash 7s ease-in-out infinite;
+}
+
 .sun-icon {
   border-radius: 50%;
   background: radial-gradient(circle at 35% 30%, #ffcf7a, #f0a35e);

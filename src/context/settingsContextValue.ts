@@ -1,5 +1,5 @@
 import { createContext } from 'react'
-import type { TempUnit, PressureUnit } from '../utils'
+import type { TempUnit, PressureUnit, DesignMode } from '../utils'
 import type { Language } from '../i18n/language'
 
 export interface SettingsContextValue {
@@ -9,6 +9,8 @@ export interface SettingsContextValue {
   setPressureUnit: (unit: PressureUnit) => void
   language: Language
   setLanguage: (language: Language) => void
+  designMode: DesignMode
+  setDesignMode: (mode: DesignMode) => void
 }
 
 export const SettingsContext = createContext<SettingsContextValue | null>(null)
