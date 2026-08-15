@@ -17,3 +17,4 @@ export { DropletIcon, VisibilityIcon, SunriseIcon, SunsetIcon } from './StatIcon
 export { default as SettingsIcon } from './SettingsIcon'
 export { default as LocationIcon } from './LocationIcon'
 export { default as StarIcon } from './StarIcon'
+export { default as ErrorIcon } from './ErrorIcon'

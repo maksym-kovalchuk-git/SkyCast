@@ -20,3 +20,4 @@ export {
 } from './settingsStorage'
 export { type DesignMode } from './designMode'
 export { getWeatherBackground } from './weatherBackground'
+export { isCityNotFoundError, resolveErrorMessage } from './apiErrors'

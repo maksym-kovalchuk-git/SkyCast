@@ -16,6 +16,7 @@ import {
   FavoritesPanel,
   WeatherParticles,
   HeaderIconButton,
+  ErrorMessage,
 } from './components';
 import { SettingsIcon, LocationIcon, StarIcon } from './icons';
 import { getWeatherBackground } from './utils';
@@ -90,7 +91,7 @@ function App() {
       </header>
 
       <main className="px-52 pt-4 pb-12 flex flex-col gap-6">
-        {error && <p className="text-red-600">{error}</p>}
+        {error && <ErrorMessage message={error} />}
         {loading ? (
           <>
             <WeatherCardSkeleton />

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { getCurrentWeather, getCityByCoords, getForecast } from '../api/weather'
 import type { CurrentWeather, ForecastResponse, GeoLocation } from '../types/weather'
-import { getSavedCity, getSavedCityLocalNames, saveCity, addRecentCity } from '../utils'
+import { getSavedCity, getSavedCityLocalNames, saveCity, addRecentCity, isCityNotFoundError, resolveErrorMessage } from '../utils'
 import { useTranslation } from '../i18n'
 
 export function useCityWeather() {
@@ -14,6 +14,7 @@ export function useCityWeather() {
   const [cityName, setCityName] = useState(() => getSavedCity() ?? 'Kyiv')
   const [cityLocalNames, setCityLocalNames] = useState(() => getSavedCityLocalNames())
   const somethingWrongMessage = t('somethingWrong')
+  const cityNotFoundMessage = t('cityNotFound')
   const displayCityName = cityLocalNames?.[language] ?? weather?.name ?? cityName
   const currentLocation: GeoLocation | null = weather
     ? { name: cityName, local_names: cityLocalNames, lat: weather.coord.lat, lon: weather.coord.lon, country: weather.sys.country }
@@ -30,11 +31,15 @@ export function useCityWeather() {
       setWeather(dataWeather)
       setForecast(dataForecast)
     } catch (e) {
-      setError(e instanceof Error ? e.message : somethingWrongMessage)
+      if (e instanceof Error && isCityNotFoundError(e.message)) {
+        setError(cityNotFoundMessage)
+      } else {
+        setError(resolveErrorMessage(e, somethingWrongMessage))
+      }
     } finally {
       setLoading(false)
     }
-  }, [language, somethingWrongMessage])
+  }, [language, somethingWrongMessage, cityNotFoundMessage])
 
   function handleSelect(loc: GeoLocation) {
     saveCity(loc.name, loc.local_names)
@@ -63,7 +68,7 @@ export function useCityWeather() {
           }
           handleSelect(loc)
         } catch (e) {
-          setError(e instanceof Error ? e.message : somethingWrongMessage)
+          setError(resolveErrorMessage(e, somethingWrongMessage))
         } finally {
           setLocating(false)
         }
