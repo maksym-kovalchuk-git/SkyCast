@@ -16,6 +16,7 @@ import {
   SettingsPanel,
   FavoritesPanel,
   WeatherParticles,
+  HeaderIconButton,
 } from './components';
 import { SettingsIcon, LocationIcon, StarIcon } from './icons';
 import {
@@ -150,31 +151,15 @@ function App() {
         <h1 className="text-2xl text-white font-extrabold tracking-tight">SkyCast</h1>
         <div className="flex items-center gap-3">
           <CitySearch ref={searchInputRef} onSelect={handleSelect} favorites={favorites} onToggleFavorite={handleToggleFavorite} />
-          <button
-            type="button"
-            onClick={() => setShowFavorites(true)}
-            aria-label={t('favorites')}
-            className="w-11 h-11 shrink-0 flex items-center justify-center rounded-full bg-white/6 border border-white/12 text-white/70 hover:text-white hover:bg-white/10 outline-none transition-colors"
-          >
+          <HeaderIconButton onClick={() => setShowFavorites(true)} ariaLabel={t('favorites')}>
             <StarIcon size={18} filled={favorites.length > 0} />
-          </button>
-          <button
-            type="button"
-            onClick={handleLocate}
-            disabled={locating}
-            aria-label={t('useMyLocation')}
-            className="w-11 h-11 shrink-0 flex items-center justify-center rounded-full bg-white/6 border border-white/12 text-white/70 hover:text-white hover:bg-white/10 outline-none transition-colors disabled:opacity-50"
-          >
+          </HeaderIconButton>
+          <HeaderIconButton onClick={handleLocate} disabled={locating} ariaLabel={t('useMyLocation')}>
             <LocationIcon size={18} />
-          </button>
-          <button
-            type="button"
-            onClick={() => setShowSettings(true)}
-            aria-label={t('settings')}
-            className="w-11 h-11 shrink-0 flex items-center justify-center rounded-full bg-white/6 border border-white/12 text-white/70 hover:text-white hover:bg-white/10 outline-none transition-colors"
-          >
+          </HeaderIconButton>
+          <HeaderIconButton onClick={() => setShowSettings(true)} ariaLabel={t('settings')}>
             <SettingsIcon size={18} />
-          </button>
+          </HeaderIconButton>
         </div>
       </header>
 
