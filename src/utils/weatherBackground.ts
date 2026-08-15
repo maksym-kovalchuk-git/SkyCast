@@ -3,7 +3,7 @@ const DEFAULT_BG =
 
 const BACKGROUNDS: Record<string, string> = {
   ClearDay:
-    'radial-gradient(120% 100% at 15% 0%, oklch(0.28 0.055 85) 0%, oklch(0.16 0.035 80) 45%, oklch(0.08 0.02 70) 100%)',
+    'radial-gradient(120% 100% at 15% 0%, oklch(0.40 0.12 55) 0%, oklch(0.22 0.09 70) 45%, oklch(0.22 0.08 85) 100%)',
   ClearNight:
     'radial-gradient(120% 100% at 15% 0%, oklch(0.20 0.07 275) 0%, oklch(0.11 0.04 275) 45%, oklch(0.06 0.02 275) 100%)',
   Clouds:
