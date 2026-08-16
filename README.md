@@ -4,6 +4,8 @@
 
 A weather app built with React, TypeScript, and Vite — current conditions, hourly and 5-day forecasts, an interactive map, and a weather-adaptive UI.
 
+🔗 **[Live demo](https://projectsky-cast.vercel.app/)**
+
 ## Features
 
 - **Current weather, hourly and 5-day forecast** for any city, with a detailed stats modal (pressure gauge, humidity + dew point, wind speed/direction compass, visibility, precipitation chance, sunrise/sunset)
