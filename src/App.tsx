@@ -75,7 +75,17 @@ function App() {
     >
       {adaptiveBackground && conditionMain && <WeatherParticles conditionMain={conditionMain} />}
       <header className="flex flex-wrap items-center justify-between gap-4 pt-7 pb-7 pr-12 pl-12">
-        <h1 className="text-2xl text-white font-extrabold tracking-tight">SkyCast</h1>
+        <div className="flex items-center gap-3">
+          <span
+            aria-hidden="true"
+            className="w-9 h-9 rounded-full shrink-0"
+            style={{
+              background: 'linear-gradient(135deg, #f7b955 0%, #5ec8f0 100%)',
+              boxShadow: '0 0 24px rgba(94,200,240,0.35)',
+            }}
+          />
+          <h1 className="text-2xl text-white font-extrabold tracking-tight">SkyCast</h1>
+        </div>
         <div className="flex items-center gap-3">
           <CitySearch ref={searchInputRef} onSelect={handleSelect} favorites={favorites} onToggleFavorite={toggleFavorite} />
           <HeaderIconButton onClick={() => setShowFavorites(true)} ariaLabel={t('favorites')}>
